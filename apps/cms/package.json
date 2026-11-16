@@ -1,0 +1,39 @@
+{
+  "name": "nota-cms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Strapi 5 CMS for the NŌTA homepage rebuild",
+  "scripts": {
+    "build": "strapi build",
+    "develop": "strapi develop",
+    "dev": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@strapi/database": "5.62.0",
+    "@strapi/plugin-users-permissions": "5.62.0",
+    "@strapi/strapi": "5.62.0",
+    "pg": "8.20.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": "24.x",
+    "npm": ">=10"
+  },
+  "strapi": {
+    "uuid": "b1d7149f-755e-4620-9ce5-b21a6024bba1",
+    "installId": "55c7de53ebc40a8830cf70d7a73328473d19ccbada2b7d2b0d630b164ac62d96",
+    "telemetryDisabled": true
+  }
+}
