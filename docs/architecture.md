@@ -100,19 +100,50 @@ healthcheck and Railway keeps the previous deployment live.
 
 ## One-time setup (runbook)
 
-> CLI flags below are checked against the installed Railway CLI before running.
+Run with Railway CLI 5.74 (IaC needs ≥ 5.42.1). Secrets are piped through `--stdin`, so they never appear in
+shell history, process lists or logs.
 
-1. `railway login`, then from the repo root `railway link` (or create the project).
-2. Shared variable `REVALIDATE_SECRET` (Project → Settings → Shared Variables), value from
-   `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
-3. `railway config plan`, review, then `railway config apply`.
-4. CMS secrets: set `APP_KEYS` (4 comma-separated values) and the five salts/secrets on `cms` with
-   `railway variables`, each from `node -e "console.log(require('crypto').randomBytes(16).toString('base64'))"`.
-5. Generate public domains for `cms` and `web`. Confirm Postgres has no public networking.
-6. After `cms` is healthy: open `/admin`, create the first admin, create a **read-only** API token, and set it as
-   `STRAPI_READ_TOKEN` on `web`.
-7. Verify: `curl -I` the site (`X-Robots-Tag: noindex`), publish a change and refresh, upload an image and
-   redeploy `cms` (the image still loads).
+```bash
+# 1. Authenticate and link (one environment: production)
+railway login
+railway link --project <project> --environment production
+(cd .railway && npm ci)                     # the SDK the CLI uses to evaluate railway.ts
+
+# 2. Shared secret: the CLI cannot create shared variables, so add REVALIDATE_SECRET in
+#    Project Settings → Shared Variables, then deploy the staged change. Value:
+node -e "process.stdout.write(require('crypto').randomBytes(32).toString('hex'))" | pbcopy
+
+# 3. Create/update every resource from .railway/railway.ts
+railway config plan                          # review the diff
+railway config apply --yes                   # add --confirm-destructive only for an approved deletion
+
+# 4. Public domains BEFORE the first build: both apps read the other's domain at build time
+railway domain --service cms --port 1337
+railway domain --service web --port 3000
+
+# 5. Strapi secrets (APP_KEYS takes 4 comma-separated values)
+node -e "const c=require('crypto');process.stdout.write([1,2,3,4].map(()=>c.randomBytes(16).toString('base64')).join(','))" \
+  | railway variable set APP_KEYS --stdin --service cms --skip-deploys
+for k in API_TOKEN_SALT ADMIN_JWT_SECRET TRANSFER_TOKEN_SALT JWT_SECRET; do
+  node -e "process.stdout.write(require('crypto').randomBytes(16).toString('base64'))" \
+    | railway variable set $k --stdin --service cms --skip-deploys
+done
+node -e "process.stdout.write(require('crypto').randomBytes(32).toString('base64'))" \
+  | railway variable set ENCRYPTION_KEY --stdin --service cms
+
+# 6. After cms is healthy: create the first admin at /admin, then Settings → API Tokens →
+#    Read-only, unlimited. Copy it and pipe it in (never paste it anywhere else):
+pbpaste | tr -d '\n' | railway variable set STRAPI_READ_TOKEN --stdin --service web --skip-deploys
+railway redeploy --service web --from-source --yes
+```
+
+**Verify:** `curl -I` the site shows `X-Robots-Tag: noindex`; the Postgres service has no domain, TCP proxy or
+`DATABASE_PUBLIC_URL`; a publish appears on the next refresh; an uploaded file returns the same SHA-256 before and
+after `railway redeploy --service cms --yes`.
+
+**Lessons from the first deploy:** a build that runs before the other service's domain exists sees `https://` for
+`${{cms.RAILWAY_PUBLIC_DOMAIN}}`, so generate domains first (step 4). A failed build has no image, so retry it with
+`--from-source`. Railway's Postgres template runs `postgres-ssl:18`.
 
 ## Local development
 

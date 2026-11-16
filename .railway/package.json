@@ -1,0 +1,9 @@
+{
+  "name": "nota-railway-iac",
+  "private": true,
+  "description": "Typed Railway Infrastructure as Code for this project. Evaluated by the Railway CLI (railway config plan/apply).",
+  "type": "module",
+  "devDependencies": {
+    "railway": "^3.17.0"
+  }
+}

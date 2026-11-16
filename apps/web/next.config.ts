@@ -1,7 +1,18 @@
 import type { NextConfig } from 'next';
 
-/** Media is served from Strapi's public domain; next/image must be allowed to fetch it. */
-const strapiPublicUrl = new URL(process.env.STRAPI_PUBLIC_URL ?? 'http://localhost:1337');
+/**
+ * Media is served from Strapi's public domain; next/image must be allowed to fetch it.
+ * Read at build time (the allow-list is compiled in), so a missing value falls back to the
+ * local CMS for CI, while a malformed one (e.g. "https://" before Railway has generated the
+ * CMS domain) stops the build with an explanation.
+ */
+const rawStrapiPublicUrl = process.env.STRAPI_PUBLIC_URL || 'http://localhost:1337';
+if (!URL.canParse(rawStrapiPublicUrl)) {
+  throw new Error(
+    `STRAPI_PUBLIC_URL is not a valid URL ("${rawStrapiPublicUrl}"). On Railway, generate the cms public domain, then rebuild web.`,
+  );
+}
+const strapiPublicUrl = new URL(rawStrapiPublicUrl);
 
 const securityHeaders = [
   // R3: never index this rebuild, even if HTML metadata were changed.
