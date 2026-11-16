@@ -117,6 +117,12 @@ node -e "process.stdout.write(require('crypto').randomBytes(32).toString('hex'))
 railway config plan                          # review the diff
 railway config apply --yes                   # add --confirm-destructive only for an approved deletion
 
+# 3b. Connect autodeploy. Services created by IaC got their repo but no deployment trigger,
+#     so pushes to main did nothing until each service was connected explicitly:
+railway service source connect --repo PavithraGamage/senior-web-developer-surge --branch main --service web
+railway service source connect --repo PavithraGamage/senior-web-developer-surge --branch main --service cms
+railway config plan                          # must report "already up to date" (no drift)
+
 # 4. Public domains BEFORE the first build: both apps read the other's domain at build time
 railway domain --service cms --port 1337
 railway domain --service web --port 3000
@@ -143,7 +149,9 @@ after `railway redeploy --service cms --yes`.
 
 **Lessons from the first deploy:** a build that runs before the other service's domain exists sees `https://` for
 `${{cms.RAILWAY_PUBLIC_DOMAIN}}`, so generate domains first (step 4). A failed build has no image, so retry it with
-`--from-source`. Railway's Postgres template runs `postgres-ssl:18`.
+`--from-source`. IaC-created services needed `railway service source connect` before pushes deployed them (step 3b);
+after that, a commit touching only `apps/web/**` deployed `web` and marked `cms` as SKIPPED, confirming the watch
+paths. Railway's Postgres template runs `postgres-ssl:18`.
 
 ## Local development
 
