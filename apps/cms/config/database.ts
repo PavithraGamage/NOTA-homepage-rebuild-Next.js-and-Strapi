@@ -1,72 +1,45 @@
-import path from 'path';
 import type { Core } from '@strapi/strapi';
-import { isDatabaseClientKind } from '@strapi/database';
 
-const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
-  const client = env('DATABASE_CLIENT', 'sqlite');
-
-  if (!isDatabaseClientKind(client)) {
-    throw new Error(
-      `Unsupported DATABASE_CLIENT: ${client}. Use "postgres", "mysql", or "sqlite".`
-    );
+/**
+ * Splits DATABASE_URL into the explicit fields Strapi's config type expects, and fails at
+ * startup with a clear message instead of a vague connection error later.
+ */
+const parseDatabaseUrl = (raw: string | undefined) => {
+  if (!raw) {
+    throw new Error('DATABASE_URL is required, e.g. postgres://user:password@host:5432/database');
   }
-
-  const connections: Record<Core.Config.Database.ClientKind, Core.Config.Database['connection']> = {
-    mysql: {
-      client: 'mysql',
-      connection: {
-        host: env('DATABASE_HOST', 'localhost'),
-        port: env.int('DATABASE_PORT', 3306),
-        database: env('DATABASE_NAME', 'strapi'),
-        user: env('DATABASE_USERNAME', 'strapi'),
-        password: env('DATABASE_PASSWORD', 'strapi'),
-        ssl: env.bool('DATABASE_SSL', false) && {
-          key: env('DATABASE_SSL_KEY', undefined),
-          cert: env('DATABASE_SSL_CERT', undefined),
-          ca: env('DATABASE_SSL_CA', undefined),
-          capath: env('DATABASE_SSL_CAPATH', undefined),
-          cipher: env('DATABASE_SSL_CIPHER', undefined),
-          rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
-        },
-      },
-      pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
-    },
-    postgres: {
-      client: 'postgres',
-      connection: {
-        connectionString: env('DATABASE_URL'),
-        host: env('DATABASE_HOST', 'localhost'),
-        port: env.int('DATABASE_PORT', 5432),
-        database: env('DATABASE_NAME', 'strapi'),
-        user: env('DATABASE_USERNAME', 'strapi'),
-        password: env('DATABASE_PASSWORD', 'strapi'),
-        ssl: env.bool('DATABASE_SSL', false) && {
-          key: env('DATABASE_SSL_KEY', undefined),
-          cert: env('DATABASE_SSL_CERT', undefined),
-          ca: env('DATABASE_SSL_CA', undefined),
-          capath: env('DATABASE_SSL_CAPATH', undefined),
-          cipher: env('DATABASE_SSL_CIPHER', undefined),
-          rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
-        },
-        schema: env('DATABASE_SCHEMA', 'public'),
-      },
-      pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
-    },
-    sqlite: {
-      client: 'sqlite',
-      connection: {
-        filename: path.join(__dirname, '..', '..', env('DATABASE_FILENAME', '.tmp/data.db')),
-      },
-      useNullAsDefault: true,
-    },
-  };
-
+  const url = new URL(raw);
   return {
-    connection: {
-      ...connections[client],
-      acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
-    },
+    // URL wraps IPv6 literals in brackets; the pg driver wants the bare address.
+    host: url.hostname.replace(/^\[|\]$/g, ''),
+    port: Number(url.port || 5432),
+    user: decodeURIComponent(url.username),
+    password: decodeURIComponent(url.password),
+    database: url.pathname.replace(/^\//, ''),
   };
 };
+
+/**
+ * Postgres only: locally via docker compose, in production via Railway's private network.
+ * A single DATABASE_URL keeps the Railway setup to one reference variable
+ * (`${{Postgres.DATABASE_URL}}`), which already points at the private hostname.
+ */
+const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database<'postgres'> => ({
+  connection: {
+    client: 'postgres',
+    connection: {
+      ...parseDatabaseUrl(env('DATABASE_URL')),
+      // Traffic stays on Railway's private network, so SSL stays off unless we ever
+      // connect through a public proxy.
+      ssl: env.bool('DATABASE_SSL', false) && {
+        rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
+      },
+      schema: env('DATABASE_SCHEMA', 'public'),
+    },
+    // min 0 lets idle connections close instead of being killed underneath the pool.
+    pool: { min: env.int('DATABASE_POOL_MIN', 0), max: env.int('DATABASE_POOL_MAX', 5) },
+    acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
+  },
+});
 
 export default config;
