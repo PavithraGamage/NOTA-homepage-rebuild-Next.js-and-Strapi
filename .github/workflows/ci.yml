@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: web (lint, types, tests, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      # No env on purpose: proves the build never needs the CMS or any secret.
+      - run: npm run build
+
+  cms:
+    name: cms (types, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/cms
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: apps/cms/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Build admin panel
+        # `strapi build` loads the runtime config, which validates these at load time.
+        # Placeholders only; nothing connects to a database during the build.
+        env:
+          DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+          APP_KEYS: ci-key-1,ci-key-2
+          API_TOKEN_SALT: ci-only
+          ADMIN_JWT_SECRET: ci-only
+          TRANSFER_TOKEN_SALT: ci-only
+          JWT_SECRET: ci-only
+          ENCRYPTION_KEY: ci-only
+        run: npm run build
