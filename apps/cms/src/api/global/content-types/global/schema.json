@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "globals",
+  "info": {
+    "singularName": "global",
+    "pluralName": "globals",
+    "displayName": "Global",
+    "description": "Site-wide settings shared by every page: brand, navigation, header, footer, waitlist modal and default SEO."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "siteName": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40,
+      "default": "NŌTA"
+    }
+  }
+}
