@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+dist/
+build/
+.strapi/
+.tmp/
+apps/cms/public/uploads/*
+!apps/cms/public/uploads/.gitkeep
+
+# Environment and secrets: never commit these, use .env.example instead
+.env
+.env.*
+!.env.example
+
+# Reference material from the original site (design belongs to its creators, R1/R3).
+# Kept locally for visual QA only, never redistributed.
+docs/reference/
+
+# Private working files: the assignment brief and the build prompt contain the reviewers' email addresses
+Senior Web Developer Interview Assignment*.pdf
+MASTER_PROMPT.md
+
+# Test artefacts
+playwright-report/
+test-results/
+coverage/
+
+# OS / editor
+.DS_Store
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea/
