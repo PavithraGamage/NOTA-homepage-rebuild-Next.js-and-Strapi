@@ -22,7 +22,9 @@ export default defineRailway((ctx, project) => {
 
   // Strapi's local upload provider writes to /app/public/uploads. Mounting a volume there
   // makes uploaded media survive redeploys (R7). A volume pins the service to one replica.
-  const uploads = volume('cms-uploads');
+  // Region and size match what Railway provisioned, so a plan never proposes shrinking it
+  // (decreasing sizeMB is destructive). Same region as the services.
+  const uploads = volume('cms-uploads', { region: 'us-west2', sizeMB: 5000 });
 
   const cms = service('cms', {
     source: github(REPO, { branch: 'main', rootDirectory: 'apps/cms' }),
