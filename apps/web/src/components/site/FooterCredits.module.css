@@ -10,7 +10,7 @@
 
 .copyright {
   grid-row: span 2;
-  color: var(--c-grey-767);
+  color: var(--c-grey-666);
 }
 
 .group {
@@ -34,7 +34,7 @@
 }
 
 .credit {
-  color: var(--c-grey-767);
+  color: var(--c-grey-666);
   font-weight: 600;
   font-size: calc(var(--fs-ui) * var(--u));
   line-height: 1;

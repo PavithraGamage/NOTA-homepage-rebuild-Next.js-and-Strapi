@@ -67,12 +67,16 @@ CI runs the same steps on every push (`.github/workflows/ci.yml`).
   response handling, the CSP builder, the scramble, image-sequence and wheel-easing helpers.
 - **End-to-end** (Playwright, below): the waitlist form on desktop and a phone; on request also Firefox,
   desktop Safari (WebKit) and an iPhone (`E2E_ALL_BROWSERS=1`, after `npx playwright install webkit firefox`).
-- **Accessibility:** axe (WCAG 2.1 A/AA and best practices) reports no violations on desktop (cinematic and
-  reduced motion), on a phone with the menu open, and with the form open. Keyboard: skip link, focus trap and
+- **Accessibility:** axe (WCAG 2.1 A/AA and best practices) checked on desktop (cinematic and reduced
+  motion), on a phone with the menu open, and with the form open. The only finding is colour contrast on
+  the reference's own greys (below); there are no other violations. Keyboard: skip link, focus trap and
   return in the dialogs, visible focus, swipe carousels reachable and scrollable with the arrow keys.
   Reduced motion gets static layouts, no preloader and no autoplay.
-- **Deliberate colour deviation:** three reference greys failed AA contrast (#666 on black, #999 on white
-  for the large "Inside"); they are nudged to #767676 and #949494, which is barely visible.
+- **Reference greys kept on purpose:** three of the design's greys are below AA contrast for their text
+  size: #666 on black (footer credits, 3.65:1), white at 40% on black (the "Who it's for" eyebrow and the
+  order button's product label) and #999 on white (the large grey "Inside", 2.84:1). We tried the nearest
+  AA values (#767676, white 47%, #949494) and chose to keep the reference's colours for fidelity; switching
+  back takes a few lines of CSS.
 - **Performance:** Lighthouse mobile ~93–98 (CLS 0, TBT ~0). Phones never download GSAP, the scenes or the
   1.8 MB hero sequence; videos load only when within a screen of view; only Latin fonts are preloaded and
   the hero image has high fetch priority. Simulated slow-4G LCP is about 2.5–3 s, dominated by the
