@@ -88,7 +88,8 @@ test.describe('with Strapi', () => {
 
     const signups = await findSignups(email);
     expect(signups).toHaveLength(1);
-    expect(signups[0]?.source).toBe(info.project.name === 'mobile' ? 'mobile-menu-cta' : 'header-cta');
+    const viaMenu = ['mobile', 'iphone'].includes(info.project.name);
+    expect(signups[0]?.source).toBe(viaMenu ? 'mobile-menu-cta' : 'header-cta');
   });
 
   test('treats an address already on the list as success, without a second entry', async ({ page }, info) => {
