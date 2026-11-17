@@ -3,7 +3,7 @@
   "info": {
     "displayName": "Detail tile",
     "icon": "grid",
-    "description": "One tile of the details grid. Tiles keep their position, so their order matters."
+    "description": "One tile of the details grid: an image, a looping video, or both. Tiles keep their position, so order matters."
   },
   "options": {},
   "attributes": {
@@ -15,7 +15,7 @@
       "type": "component",
       "repeatable": false,
       "component": "shared.responsive-image",
-      "required": true
+      "required": false
     },
     "video": {
       "type": "media",

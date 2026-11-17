@@ -3,7 +3,7 @@
   "info": {
     "displayName": "Video",
     "icon": "play",
-    "description": "A muted video with a poster image shown before it plays and for reduced motion."
+    "description": "A muted video. An optional poster shows before it plays and for reduced motion."
   },
   "options": {},
   "attributes": {
@@ -18,7 +18,7 @@
     "poster": {
       "type": "media",
       "multiple": false,
-      "required": true,
+      "required": false,
       "allowedTypes": [
         "images"
       ]

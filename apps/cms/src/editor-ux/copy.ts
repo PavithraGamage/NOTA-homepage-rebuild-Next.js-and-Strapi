@@ -97,7 +97,7 @@ export const EDITOR_COPY: Record<string, ViewCopy> = {
     mainField: 'description',
     fields: {
       file: f('Video', 'MP4, muted, a few seconds long. Plays without sound.'),
-      poster: f('Poster', 'Shown before the video plays and when the visitor prefers reduced motion.'),
+      poster: f('Poster', 'Recommended: a still from the video, shown before it plays and for reduced motion. Without one, the first frame is used.'),
       description: f('Description', 'Optional. What the video shows, for screen readers.'),
     },
   },
@@ -161,7 +161,7 @@ export const EDITOR_COPY: Record<string, ViewCopy> = {
     mainField: 'label',
     fields: {
       label: f('Label', 'Optional pill shown on the tile.', 'Aluminum body'),
-      image: f('Image', 'Tile image. For a video tile, this is the poster.'),
+      image: f('Image', 'Tile image. On a video tile it is the poster, and optional.'),
       video: f('Video', 'Optional. Plays on a loop instead of the image.'),
     },
   },
