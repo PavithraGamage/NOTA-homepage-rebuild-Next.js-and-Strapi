@@ -5,6 +5,8 @@ import type { Core } from '@strapi/strapi';
  * - `sandbox` + `default-src 'none'`: an uploaded SVG opened directly on the CMS domain
  *   cannot run scripts or load anything, so allowing SVG uploads is safe.
  * - `nosniff`: browsers must respect the stored Content-Type.
+ * - CORS: uploads are public, and the site draws the SVG logo as a CSS mask, which browsers
+ *   fetch in CORS mode.
  * - Long cache: Strapi gives every upload a unique hashed file name, so a replaced image gets
  *   a new URL instead of a stale cached copy.
  */
@@ -15,6 +17,7 @@ const uploadHeaders: Core.MiddlewareFactory = () => async (ctx, next) => {
     ctx.set('X-Content-Type-Options', 'nosniff');
     ctx.set('Cache-Control', 'public, max-age=31536000, immutable');
     ctx.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    ctx.set('Access-Control-Allow-Origin', '*');
   }
 };
 
