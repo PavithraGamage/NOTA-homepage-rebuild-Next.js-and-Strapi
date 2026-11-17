@@ -21,6 +21,11 @@
     transform 0.4s ease;
 }
 
+/* Slides away while scrolling down (see useHeaderBehaviour). */
+.header[data-hidden] {
+  transform: translateY(-110%);
+}
+
 .header[data-theme='light'] {
   color: var(--c-black);
   border-bottom-color: var(--c-black-10);

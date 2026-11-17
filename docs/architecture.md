@@ -51,6 +51,34 @@ sequenceDiagram
 - Next.js 16's Cache Components are switched off: they prerender a static shell at build time, which our build
   cannot do without the CMS.
 
+## Motion (scroll scenes)
+
+Large screens without a reduced-motion preference get the reference's "cinematic" mode; phones, tablets
+and reduced-motion visitors keep the static layouts. One media query (`lib/animation/media.ts`) gates
+both the CSS and the JavaScript, so layout never waits for JS.
+
+- **Pinning is CSS, not JS.** Each scene is a tall wrapper (`height: (--scene + 1) × 100vh`) holding a
+  `position: sticky` 100vh stage. Where one stage must stay frozen under the next (hero → specs), the
+  next section starts higher with a negative margin. Where a section slides in under a stage that is
+  turning the same colour (black bands, white circle), it stays invisible until it pins, so the
+  hand-over is seamless.
+- **Scrubbing is GSAP.** `components/motion/Scene.tsx` wraps a server-rendered section and, inside
+  `useGSAP` + `gsap.matchMedia`, runs that section's scene (`lib/animation/scenes/*`). A scene's
+  timeline is measured in viewport heights of scroll (1 = 100vh), and its length is read from the same
+  `--scene` CSS variable that sizes the wrapper, so CSS and JS cannot drift apart. Positions and eases
+  are named constants measured on the reference (docs/reference-audit.md §1.3). Leaving cinematic
+  mode (resize, OS setting, unmount, hot reload) reverts every tween and ScrollTrigger.
+- **Hero sequence.** The hero "Lottie" is 75 full-frame WebP images with static transforms, so a
+  canvas draws the current frame instead of shipping a Lottie runtime. It is downloaded only in
+  cinematic mode; until the frames are decoded the server-rendered first frame shows.
+- **Preloader** (`components/motion/Preloader.tsx`) follows real progress (fonts and the sequence), never
+  counts faster than the reference's 1.2s, and gives up after 6s; CSS fades it out after 6s even if the
+  script never runs. When it ends, the header and hero heading fade in and the nav labels scramble once.
+- **Header**: hides on scroll down past the hero sequence, shows on any scroll up, and takes its colours
+  from the section under it (`data-header-theme`, found by hit-testing so overlapping stages work).
+- **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
+  (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
+
 ## Railway configuration as code
 
 Railway's `railway.toml` (Config as Code) is deprecated and cannot be used by new services, so the whole

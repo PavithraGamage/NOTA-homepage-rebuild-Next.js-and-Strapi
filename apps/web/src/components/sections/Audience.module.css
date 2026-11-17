@@ -15,6 +15,15 @@
   color: var(--c-white);
 }
 
+/* Scroll-scene wrappers; outside the scene they do not affect layout. */
+.leadTrack,
+.lead,
+.videoScene,
+.videoStage,
+.videoTile {
+  display: contents;
+}
+
 .statement {
   padding-bottom: calc(16 * var(--u));
   border-bottom: 1px solid var(--c-white-20);
@@ -102,7 +111,8 @@
 
 @media (min-width: 992px) {
   .audience {
-    padding: calc(80 * var(--u)) calc(var(--gutter) * var(--u)) calc(80 * var(--u));
+    --pad-top: calc(80 * var(--u));
+    padding: var(--pad-top) calc(var(--gutter) * var(--u)) calc(80 * var(--u));
   }
 
   /* On desktop the reference reveals this statement word by word; its word wrappers leave
@@ -166,7 +176,7 @@
 
 @media (min-width: 1920px) {
   .audience {
-    padding-top: calc(120 * var(--u));
+    --pad-top: calc(120 * var(--u));
   }
 
   .statement {
@@ -181,5 +191,69 @@
   .paragraphs p:first-child,
   .paragraphs p + p {
     text-indent: calc(240 * var(--u));
+  }
+}
+
+/*
+ * Scroll scene: the section slides in (hidden) under the specs bands, then the lead holds at the
+ * top for 1.23 screens while the statement reveals. The video gets its own stage that pins one
+ * screen early, so the tile grows while the last cards are still on screen.
+ */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .audience {
+    --scene: 2;
+    position: relative;
+    margin-top: -100vh;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .leadTrack {
+    display: block;
+  }
+
+  /* Room for the lead to stay stuck (sticky boxes are confined to the parent's content box,
+     so this has to be content, not padding). */
+  .leadTrack::after {
+    content: '';
+    display: block;
+    height: 123vh;
+  }
+
+  .lead {
+    display: block;
+    position: sticky;
+    top: 0;
+    padding-top: var(--pad-top);
+    background: var(--c-black);
+  }
+
+  /* Pins 1.44 screens early so the tile grows while the last cards are still in view. */
+  .videoScene {
+    --scene: 3.27;
+    display: block;
+    position: relative;
+    height: calc((var(--scene) + 1) * 100vh);
+    margin: -144vh calc(var(--gutter) * var(--u) * -1) 0;
+    pointer-events: none;
+  }
+
+  .videoStage {
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .videoTile {
+    display: block;
+    position: absolute;
+    inset: calc(120 * var(--u)) calc(var(--gutter) * var(--u));
+  }
+
+  .video {
+    margin: 0;
+    height: 100%;
   }
 }

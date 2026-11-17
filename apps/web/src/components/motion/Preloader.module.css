@@ -1,0 +1,42 @@
+/* Only in cinematic mode (large screens, motion allowed); other visitors never see it. */
+.preloader {
+  display: none;
+}
+
+.counter {
+  font-family: var(--font-display);
+  font-size: calc(32 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .preloader {
+    display: grid;
+    place-items: center;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--stage-gradient);
+    color: var(--c-white);
+    transition:
+      opacity 0.8s ease,
+      visibility 0s linear 0.8s;
+    /* Safety net if the script never runs: fade out after 6s anyway. */
+    animation: preloader-fallback 0.8s ease 6s forwards;
+  }
+
+  .preloader[data-state='done'] {
+    opacity: 0;
+    visibility: hidden;
+    animation: none;
+  }
+}
+
+@keyframes preloader-fallback {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

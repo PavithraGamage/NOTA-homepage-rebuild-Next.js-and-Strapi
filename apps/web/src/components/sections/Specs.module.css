@@ -17,6 +17,16 @@
   color: var(--c-black);
 }
 
+/* Outside the scroll scene the stage is invisible to layout. */
+.stage {
+  display: contents;
+}
+
+.columns,
+.bands {
+  display: none;
+}
+
 .heading {
   text-align: center;
 }
@@ -146,18 +156,20 @@
     --card-pad-inline: calc(19 * var(--u));
     --row-pad: 1.13vh;
     --row-gap: 1.4vh;
+    --pad-top: calc(5.6vh - 14 * var(--u));
     display: block;
     height: 100vh;
-    padding: calc(5.6vh - 14 * var(--u)) 0 0;
+    padding: var(--pad-top) 0 0;
     overflow: hidden;
   }
 
   .pen {
     position: absolute;
-    left: 50%;
+    left: 0;
+    right: 0;
     bottom: 0;
-    margin: 0;
-    transform: translateX(-50%);
+    width: fit-content;
+    margin: 0 auto;
   }
 
   .pen img {
@@ -209,7 +221,7 @@
     --card-pad-inline: calc(30 * var(--u));
     --row-pad: calc(16 * var(--u));
     --row-gap: calc(13 * var(--u));
-    padding-top: calc(66 * var(--u));
+    --pad-top: calc(66 * var(--u));
   }
 
   .pen img {
@@ -230,7 +242,7 @@
     --card-pad-inline: calc(40 * var(--u));
     --row-pad: calc(21 * var(--u));
     --row-gap: calc(17 * var(--u));
-    padding-top: calc(106 * var(--u));
+    --pad-top: calc(106 * var(--u));
   }
 
   .pen img {
@@ -239,5 +251,69 @@
 
   .groups {
     bottom: calc(194 * var(--u));
+  }
+}
+
+/*
+ * Scroll scene: the wrapper starts 1.8 screens up, so the stage pins while the hero is still
+ * pinned beneath it; the white columns rise over the hero, then the content animates in, and
+ * four black bands (1:2:2:2 of the height) grow from the centre to hand over to the black
+ * "Who it's for" section.
+ */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .specs {
+    --scene: 3.85;
+    height: calc((var(--scene) + 1) * 100vh);
+    margin-top: -180vh;
+    padding: 0;
+    overflow: visible;
+    background: none;
+  }
+
+  .stage {
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-top: var(--pad-top);
+    overflow: hidden;
+  }
+
+  .columns,
+  .bands {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .column {
+    flex: 1;
+    background: var(--c-white);
+    box-shadow: inset -1px 0 rgba(0, 0, 0, calc(var(--divider, 1) * 0.04));
+  }
+
+  .heading {
+    position: relative;
+  }
+
+  .heading,
+  .pen,
+  .groups {
+    z-index: 1;
+  }
+
+  .bands {
+    z-index: 2;
+    flex-direction: column;
+  }
+
+  .band {
+    flex: 2;
+    background: var(--c-black);
+  }
+
+  .band:first-child {
+    flex: 1;
   }
 }

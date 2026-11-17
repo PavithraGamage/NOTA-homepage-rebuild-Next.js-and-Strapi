@@ -149,3 +149,12 @@ a.link:focus-visible {
     min-height: calc(435 * var(--u));
   }
 }
+
+/* Cinematic mode: the footer waits under the page and the colorways stage scrolls off it. */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 0;
+  }
+}

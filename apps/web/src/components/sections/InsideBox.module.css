@@ -23,6 +23,11 @@
   height: calc(680 * var(--u));
 }
 
+/* Outside the scroll scene the intro's stage does not affect layout. */
+.introStage {
+  display: contents;
+}
+
 .heading {
   text-align: center;
 }
@@ -174,5 +179,54 @@
 
   .statement {
     max-width: calc(1415 * var(--u));
+  }
+}
+
+/*
+ * Scroll scene: the section slides in (hidden) while the smart-paper circle grows, the intro holds
+ * for 0.44 screens while the heading fades in, then everything scrolls in normal flow. Cards are
+ * revealed through closing white stripes ("blinds", 33 design px apart), driven by --blind.
+ */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .insideBox {
+    position: relative;
+    margin-top: -100vh;
+  }
+
+  .intro {
+    --scene: 0.44;
+    display: block;
+    height: calc((var(--scene) + 1) * 100vh);
+    margin-bottom: calc(var(--gutter) * var(--u));
+  }
+
+  /* Scroll room for the word reveal (measured at 1440×900: 365 above, 378 below). */
+  .statement {
+    margin-top: 40.5vh;
+    margin-bottom: 42vh;
+  }
+
+  .introStage {
+    display: grid;
+    place-items: center;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--c-white) 0 calc(var(--blind, 0) * var(--u)),
+      transparent calc(var(--blind, 0) * var(--u)) calc(33 * var(--u))
+    );
+    pointer-events: none;
+  }
+
+  .caption {
+    z-index: 1;
   }
 }

@@ -309,6 +309,15 @@ picture {
   letter-spacing: -0.07em;
 }
 
+/* Cinematic mode: the page sits above the footer, which the last scene uncovers. */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  main {
+    position: relative;
+    z-index: 1;
+    background: var(--c-black);
+  }
+}
+
 /* ---------- Utilities ---------- */
 .visually-hidden {
   position: absolute;
