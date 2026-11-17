@@ -39,7 +39,7 @@
   line-height: 1;
   letter-spacing: -0.07em;
   text-transform: uppercase;
-  color: var(--c-white-40);
+  color: var(--c-white-47);
 }
 
 /* Below 992px the paragraphs run on as one block, like the reference. */

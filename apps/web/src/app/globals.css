@@ -18,12 +18,18 @@
   --c-white: #fff;
   --c-grey-666: #666;
   --c-grey-999: #999;
+  /* AA-contrast versions of the reference greys where they carry small text (WCAG 2.1 AA):
+     #666 on black is 3.65:1, #767676 is 4.6:1; #999 on white is 2.84:1 for large text,
+     #949494 is 3.03:1. The difference is barely visible. */
+  --c-grey-767: #767676;
+  --c-grey-949: #949494;
   --c-grey-ddd: #ddd;
   --c-panel: #f2f2f2;
   --c-error: #f20;
   --c-white-55: rgba(255, 255, 255, 0.55);
   --c-white-50: rgba(255, 255, 255, 0.5);
   --c-white-40: rgba(255, 255, 255, 0.4);
+  --c-white-47: rgba(255, 255, 255, 0.47);
   --c-white-20: rgba(255, 255, 255, 0.2);
   --c-white-05: rgba(255, 255, 255, 0.05);
   --c-black-10: rgba(0, 0, 0, 0.1);
@@ -319,6 +325,28 @@ picture {
 }
 
 /* ---------- Utilities ---------- */
+
+/* First tab stop: jumps past the header straight to the page content. */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 4px;
+  background: var(--c-white);
+  color: var(--c-black);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+main:focus {
+  outline: none;
+}
 .visually-hidden {
   position: absolute;
   width: 1px;
