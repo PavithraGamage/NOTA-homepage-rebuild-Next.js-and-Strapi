@@ -61,6 +61,25 @@ cd apps/cms && npm run typecheck && npm test && npm run build
 
 CI runs the same steps on every push (`.github/workflows/ci.yml`).
 
+### Testing, accessibility and performance
+
+- **Unit tests** (Vitest): content mappers, env and revalidation, the waitlist rules, rate limiter and Strapi
+  response handling, the CSP builder, the scramble and image-sequence helpers.
+- **End-to-end** (Playwright, below): the waitlist form on desktop and a phone; on request also Firefox,
+  desktop Safari (WebKit) and an iPhone (`E2E_ALL_BROWSERS=1`, after `npx playwright install webkit firefox`).
+- **Accessibility:** axe (WCAG 2.1 A/AA and best practices) reports no violations on desktop (cinematic and
+  reduced motion), on a phone with the menu open, and with the form open. Keyboard: skip link, focus trap and
+  return in the dialogs, visible focus, swipe carousels reachable and scrollable with the arrow keys.
+  Reduced motion gets static layouts, no preloader and no autoplay.
+- **Deliberate colour deviation:** three reference greys failed AA contrast (#666 on black, #999 on white
+  for the large "Inside"); they are nudged to #767676 and #949494, which is barely visible.
+- **Performance:** Lighthouse mobile ~93–98 (CLS 0, TBT ~0). Phones never download GSAP, the scenes or the
+  1.8 MB hero sequence; videos load only when within a screen of view; only Latin fonts are preloaded and
+  the hero image has high fetch priority. Simulated slow-4G LCP is about 2.5–3 s, dominated by the
+  server round trip from Railway's US region; observed LCP is ~1.2 s.
+- **Browsers:** the full scroll story was checked in Chrome, Firefox and WebKit (Safari engine), and the phone
+  layout in an iPhone emulation. Real-device iOS Safari is worth a final look before submission.
+
 ### End-to-end tests
 
 Playwright drives the waitlist form against the running site and CMS (desktop and phone): empty and
