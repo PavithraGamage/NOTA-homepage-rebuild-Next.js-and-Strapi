@@ -35,3 +35,6 @@ coverage/
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Written by `next dev` on every run (agent hints for the installed Next.js); generated, not source
+apps/web/AGENTS.md

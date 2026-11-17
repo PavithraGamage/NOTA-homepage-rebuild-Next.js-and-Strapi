@@ -45,6 +45,25 @@ behaviour.
 written as `calc(<design px> * var(--u))`. Then one set of design values per range reproduces the
 reference at any width. This is our own technique; only the numbers come from measurement.
 
+**Refinements found in Phase 3** (measured with transform-free geometry at 992×620/744, 1440×800/900 and
+1920×1080/1200):
+
+- **The 1920 range is only partly re-specified.** Type, the header, the footer, the details bento and the
+  inside-the-box captions have their own 1920 values. Some spacing in specs, who-it's-for and smart paper keeps
+  scaling from the 1440 design (×4/3 at 1920: card padding 40, radius 23.2, row gaps). Those values get explicit
+  ≥1920 overrides.
+- **Pinned desktop stages are partly sized in viewport height.** Specs: 992 is laid out in vh (padding 5.6vh,
+  pen 71vh, cards 12.6vh above the bottom), and the pen is 66vh at 1440 and 68vh at 1920, with the cards a
+  fixed distance above the bottom edge. Inside the box: kit and product cards are `100vh − 2 gutters` (820 at
+  1440×900, 1000 at 1920×1080).
+- **Phones and tablets:** smart-paper steps are 680/1024 design px tall but never taller than the screen
+  (`min(…, 100svh)`).
+- **Desktop statement spacing:** the who-it's-for statement is split into per-word spans for its scroll reveal,
+  which adds 0.13em to every space. We reproduce that with `word-spacing` so the lines break where the
+  reference's do (checked at 992, 1440 and 1920). On phones it is plain text with normal spacing.
+- **Copy variant we do not reproduce:** at 992–1439 the reference swaps in shorter spec bullets ("Replaceable pen
+  ink cartridge"). We keep one CMS string per bullet, so two of them wrap to a second line in that range.
+
 ### 1.2 Two layout modes
 
 - **≥ 992px: cinematic.** Preloader, then a chain of pinned, scroll-driven scenes (§1.3). The page is about
@@ -105,7 +124,8 @@ Measured styles (design px per range; letter-spacing in em):
 
 Weights: nav and header 500, footer 600, titles/lead 600, body 400, list items 500. **Two-tone headings** are
 a recurring pattern: first line muted (#666 "Nota pen" or #999 "Inside", "Works with"), second line black.
-Statement styles split into per-word spans (scroll reveal) still need an exact size check in Phase 3.
+Statement sizes per range were confirmed in Phase 3 (inside-the-box statement: 43.65 at 992, 53.28 at 1440,
+67.2 at 1920; word spacing in §1.1).
 
 ### 1.5 Colour tokens (colour-picked)
 
