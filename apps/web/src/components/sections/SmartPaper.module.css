@@ -33,7 +33,17 @@
   color: var(--c-grey-666);
 }
 
+/* Outside the scroll scene the stage is a plain wrapper; the steps area is the carousel box. */
 .stage {
+  position: relative;
+}
+
+.columns,
+.circle {
+  display: none;
+}
+
+.steps {
   position: relative;
   color: var(--c-white);
 }
@@ -73,6 +83,16 @@
     rgba(0, 0, 0, 0.4) 100%
   );
   pointer-events: none;
+}
+
+.image,
+.copy {
+  position: absolute;
+  inset: 0;
+}
+
+.copy {
+  z-index: 1;
 }
 
 .image img {
@@ -150,7 +170,7 @@
     min-height: 100vh;
   }
 
-  .stage {
+  .steps {
     height: 100vh;
     overflow: hidden;
   }
@@ -224,5 +244,82 @@
 
   .card {
     border-radius: calc(21.3 * var(--u));
+  }
+}
+
+/*
+ * Scroll scene: one pinned stage for 5.78 screens. The intro (white columns + heading) sits on
+ * top; the steps are stacked with the first on top; the circle grows over everything at the end.
+ * The section slides in over the pinned video stage of "Who it's for".
+ */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .smartPaper {
+    --scene: 5.78;
+    position: relative;
+    height: calc((var(--scene) + 1) * 100vh);
+    margin-top: -100vh;
+    background: none;
+  }
+
+  .stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--c-black);
+  }
+
+  .intro {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    min-height: 0;
+    background: none;
+  }
+
+  .columns {
+    --divider: 0;
+    display: flex;
+    position: absolute;
+    inset: 0;
+  }
+
+  .column {
+    flex: 1;
+    background: var(--c-white);
+    box-shadow: inset -1px 0 rgba(0, 0, 0, calc(var(--divider) * 0.06));
+  }
+
+  .heading {
+    position: relative;
+  }
+
+  /* Own stacking context, so the stacked steps stay under the intro and the circle. */
+  .steps {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    height: auto;
+  }
+
+  .step:not([data-step='0']) {
+    visibility: visible;
+  }
+
+  .progress {
+    z-index: 10;
+  }
+
+  .circle {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    width: calc(600 * var(--u));
+    aspect-ratio: 1;
+    margin: calc(-300 * var(--u)) 0 0 calc(-300 * var(--u));
+    border-radius: 50%;
+    background: var(--c-white);
   }
 }

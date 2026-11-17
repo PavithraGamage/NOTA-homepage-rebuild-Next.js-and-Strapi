@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { ColorwaysSection } from '@/lib/content/types';
+import { Scene } from '@/components/motion/Scene';
 import { Picture } from '@/components/ui/Picture';
 import { Progress } from '@/components/ui/Progress';
 import styles from './Colorways.module.css';
@@ -21,30 +22,36 @@ export function Colorways({ section }: { section: ColorwaysSection }) {
   ];
 
   return (
-    <section
+    <Scene
+      scene="colorways"
       id={section.anchorId}
       className={styles.colorways}
       data-header-theme="dark"
       aria-label={`${section.headingStart} ${section.headingEnd}`}
     >
-      <ol className={styles.track} data-carousel-track>
-        {slides.map((slide, index) => (
-          <li
-            key={slide.key}
-            className={styles.slide}
-            data-slide={index}
-            aria-roledescription="slide"
-            aria-label={`${index + 1} / ${slides.length}`}
-            style={{ '--text': slide.color } as CSSProperties}
-          >
-            <Picture image={slide.image} sizes="100vw" className={styles.image} />
-            <p className={`${styles.text} t-colorway`} data-intro={index === 0}>
-              <span className={styles.start}>{slide.start}</span> <span className={styles.end}>{slide.end}</span>
-            </p>
-          </li>
-        ))}
-      </ol>
-      <Progress count={slides.length} className={styles.progress} />
-    </section>
+      <div className={styles.stage}>
+        <ol className={styles.track} data-carousel-track>
+          {slides.map((slide, index) => (
+            <li
+              key={slide.key}
+              className={styles.slide}
+              data-slide={index}
+              data-anim="slide"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} / ${slides.length}`}
+              style={{ '--text': slide.color } as CSSProperties}
+            >
+              <div className={styles.image} data-anim="slide-image">
+                <Picture image={slide.image} sizes="100vw" />
+              </div>
+              <p className={`${styles.text} t-colorway`} data-intro={index === 0} data-anim="slide-text">
+                <span className={styles.start}>{slide.start}</span> <span className={styles.end}>{slide.end}</span>
+              </p>
+            </li>
+          ))}
+        </ol>
+        <Progress count={slides.length} className={styles.progress} />
+      </div>
+    </Scene>
   );
 }

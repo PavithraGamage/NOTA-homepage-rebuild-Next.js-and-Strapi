@@ -30,6 +30,16 @@
   color: var(--text);
 }
 
+/* Outside the scroll scene the stage does not affect layout. */
+.stage {
+  display: contents;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+}
+
 .image img {
   position: absolute;
   inset: 0;
@@ -129,5 +139,29 @@
 
   .end {
     padding-left: calc(132 * var(--u));
+  }
+}
+
+/*
+ * Scroll scene: the stage pins for 2.5 screens while the colourways cross-fade, then scrolls
+ * away and uncovers the footer, which waits underneath (see Footer.module.css).
+ */
+@media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
+  .colorways {
+    --scene: 2.5;
+    height: calc((var(--scene) + 1) * 100vh);
+    overflow: visible;
+  }
+
+  .stage {
+    display: block;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .slide:not([data-slide='0']) {
+    visibility: visible;
   }
 }
