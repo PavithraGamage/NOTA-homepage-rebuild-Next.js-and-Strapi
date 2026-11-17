@@ -10,7 +10,8 @@
     "start": "strapi start",
     "strapi": "strapi",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "@strapi/database": "5.62.0",
