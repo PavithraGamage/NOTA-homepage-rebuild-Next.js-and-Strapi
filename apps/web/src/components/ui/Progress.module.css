@@ -1,0 +1,37 @@
+/* 55x2 segments, 5 apart; desktop 80 (992), 120 (1440), 160 (1920). Current one is white. */
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: calc(5 * var(--u));
+  pointer-events: none;
+}
+
+.segment {
+  width: calc(55 * var(--u));
+  height: 2px;
+  border-radius: 2px;
+  background: var(--c-white-40);
+  transition: background-color 0.4s ease;
+}
+
+.segment[data-current='true'] {
+  background: var(--c-white);
+}
+
+@media (min-width: 992px) {
+  .segment {
+    width: calc(80 * var(--u));
+  }
+}
+
+@media (min-width: 1440px) {
+  .segment {
+    width: calc(120 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .segment {
+    width: calc(160 * var(--u));
+  }
+}

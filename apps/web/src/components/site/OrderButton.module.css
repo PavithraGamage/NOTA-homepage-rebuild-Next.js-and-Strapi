@@ -1,0 +1,60 @@
+/* Measured: 992 204 x 42 (padding 15), 1440 214 x 52 (padding 20); radius 4. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--c-white);
+  border-radius: calc(4 * var(--u));
+  transition:
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.button > span:first-child {
+  margin-right: 0.25em;
+}
+
+.product {
+  color: var(--c-white-40);
+  transition: color 0.3s ease;
+}
+
+.dot {
+  width: calc(5 * var(--u));
+  height: calc(5 * var(--u));
+  margin: 0 calc(10 * var(--u));
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Header (desktop only). */
+.solid {
+  padding: 0 calc(15 * var(--u));
+  height: calc(42 * var(--u));
+  background: var(--c-black);
+}
+
+@media (min-width: 1440px) {
+  .solid {
+    padding: 0 calc(20 * var(--u));
+    height: calc(52 * var(--u));
+  }
+}
+
+.solid:hover {
+  background: #1f1f1f;
+}
+
+.button:hover .product {
+  color: var(--c-white);
+}
+
+/* Mobile menu: translucent pill over the oval image. */
+.glass {
+  height: calc(46 * var(--u));
+  padding: 0 calc(22 * var(--u));
+  border-radius: calc(100 * var(--u));
+  background: rgba(20, 24, 40, 0.45);
+  backdrop-filter: blur(calc(10 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(10 * var(--u)));
+}
