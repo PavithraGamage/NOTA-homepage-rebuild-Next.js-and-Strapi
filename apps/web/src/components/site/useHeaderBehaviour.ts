@@ -3,6 +3,8 @@
 import { useEffect, type RefObject } from 'react';
 import { CINEMATIC, HERO_SEQUENCE } from '@/lib/animation/media';
 
+const THEME_CHECK_MS = 100;
+
 /**
  * Header behaviour measured on the reference: it slides away when you scroll down past the
  * opening scene and comes back on any scroll up; its colours follow the section beneath it
@@ -16,7 +18,17 @@ export function useHeaderBehaviour(ref: RefObject<HTMLElement | null>) {
     const cinematic = window.matchMedia(CINEMATIC);
     let lastY = window.scrollY;
     let frame = 0;
+    let lastCheck = 0;
+    let trailing = 0;
 
+    const checkTheme = () => {
+      window.clearTimeout(trailing);
+      lastCheck = performance.now();
+      const probeY = Math.max(1, header.offsetHeight / 2);
+      const under = document.elementsFromPoint(window.innerWidth / 2, probeY).find((el) => !header.contains(el));
+      const theme = under?.closest<HTMLElement>('[data-header-theme]')?.dataset.headerTheme;
+      if (theme) header.dataset.theme = theme;
+    };
     const update = () => {
       frame = 0;
       const y = window.scrollY;
@@ -25,10 +37,13 @@ export function useHeaderBehaviour(ref: RefObject<HTMLElement | null>) {
       else if (y < lastY || y <= hideAfter) delete header.dataset.hidden;
       lastY = y;
 
-      const probeY = Math.max(1, header.offsetHeight / 2);
-      const under = document.elementsFromPoint(window.innerWidth / 2, probeY).find((el) => !header.contains(el));
-      const theme = under?.closest<HTMLElement>('[data-header-theme]')?.dataset.headerTheme;
-      if (theme) header.dataset.theme = theme;
+      // Hit-testing forces layout, so it runs ~10 times a second while scrolling (plus once
+      // when scrolling stops) instead of on every frame.
+      if (performance.now() - lastCheck >= THEME_CHECK_MS) checkTheme();
+      else {
+        window.clearTimeout(trailing);
+        trailing = window.setTimeout(checkTheme, THEME_CHECK_MS);
+      }
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -41,6 +56,7 @@ export function useHeaderBehaviour(ref: RefObject<HTMLElement | null>) {
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       cancelAnimationFrame(frame);
+      window.clearTimeout(trailing);
     };
   }, [ref]);
 }

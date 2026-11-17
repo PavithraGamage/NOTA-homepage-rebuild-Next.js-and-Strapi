@@ -27,7 +27,7 @@ const CIRCLE_GROWTH = [0.014, 0.092, 0.229, 0.433, 0.701, 1];
 export function smartPaperScene(section: HTMLElement) {
   const timeline = sceneTimeline(section);
   const steps = parts(section, 'step');
-  const progress = section.querySelector('[data-progress]');
+  const progress = section.querySelector<HTMLElement>('[data-progress]');
 
   const heading = part(section, 'intro-heading');
   if (heading)
