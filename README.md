@@ -38,12 +38,14 @@ npm install
 npm run seed                              # all homepage content and media (~1 min the first time)
 npm run develop                           # http://localhost:1337/admin → create your admin user
 
-# 3. In the admin: Settings → API Tokens → Create new API Token
-#    Type "Custom", duration "Unlimited", permissions: find on Global, Homepage and Product.
+# 3. In the admin: Settings → API Tokens → Create new API Token, type "Custom", duration "Unlimited":
+#    - read token: find on Global, Homepage and Product        → STRAPI_READ_TOKEN
+#    - form token: create on Waitlist-signup (nothing else)     → STRAPI_FORM_TOKEN
+#    (or locally: cd apps/cms && npm run --silent create-token -- read|form, which prints just the token)
 
 # 4. Web (new terminal)
 cd apps/web
-cp .env.example .env.local                # paste the token into STRAPI_READ_TOKEN and use the
+cp .env.example .env.local                # paste the tokens into STRAPI_READ_TOKEN / STRAPI_FORM_TOKEN and use the
 npm install                               # same REVALIDATE_SECRET as apps/cms/.env
 npm run dev                               # http://localhost:3000
 ```
@@ -58,3 +60,15 @@ cd apps/cms && npm run typecheck && npm test && npm run build
 ```
 
 CI runs the same steps on every push (`.github/workflows/ci.yml`).
+
+### End-to-end tests
+
+Playwright drives the waitlist form against the running site and CMS (desktop and phone): empty and
+invalid input, success with the entry stored in Strapi, a repeat address shown as success without a second
+entry, and the honeypot. They need both servers running and an `E2E_STRAPI_TOKEN` (find + delete on
+Waitlist-signup) in `apps/web/.env.local`, so they can check and then delete what they created.
+
+```bash
+cd apps/cms && npm run --silent create-token -- e2e   # paste into apps/web/.env.local as E2E_STRAPI_TOKEN
+cd apps/web && npm run test:e2e                       # uses the installed Chrome
+```
