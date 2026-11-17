@@ -79,6 +79,30 @@ both the CSS and the JavaScript, so layout never waits for JS.
 - **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
   (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
 
+## Waitlist form (browser → Server Action → Strapi)
+
+```mermaid
+flowchart LR
+  B["Browser: same Zod rules, instant errors"] -->|"Server Action POST (same origin)"| A["joinWaitlist (web)"]
+  A -->|"honeypot · rules again · 5 per IP / 10 min"| A
+  A -->|"POST /api/waitlist-signups, create-only token, private network"| S["Strapi"]
+  S -->|"email type · required · unique · max 254"| DB[("Postgres")]
+```
+
+- **One set of rules** (`lib/waitlist/schema.ts`) runs in the browser for instant feedback and again in the
+  Server Action; Strapi enforces them a third time. Addresses are trimmed and lower-cased, so case
+  variants are one signup.
+- **The Server Action** (`app/actions/waitlist.ts`) gets Next.js's CSRF origin check and 1 MB body limit for
+  free, then adds a honeypot field (bots get a quiet "success", nothing is stored), validation, and a
+  per-IP limit (in memory: one web instance; a shared store such as Redis if it ever scales out).
+- **The create-only token** can do one thing: create waitlist entries. It cannot read them, and the Public
+  role has no permissions at all, so the list is visible only in the admin.
+- **What the visitor sees** is success or a generic error. An address already on the list is reported as
+  success (Strapi's unique-email 400 is recognised), so the form never reveals who has signed up; Strapi's
+  details go to the server log without the address.
+- Trade-off: the reference uses a captcha. A honeypot plus rate limit adds no friction or third-party
+  script; a captcha (e.g. Turnstile) is the upgrade if spam ever gets past it.
+
 ## Railway configuration as code
 
 Railway's `railway.toml` (Config as Code) is deprecated and cannot be used by new services, so the whole
@@ -173,6 +197,10 @@ node -e "process.stdout.write(require('crypto').randomBytes(32).toString('base64
 #    emails). Delete Strapi's auto-created "Full Access" and "Read Only" tokens. Pipe the key in:
 pbpaste | tr -d '\n' | railway variable set STRAPI_READ_TOKEN --stdin --service web --skip-deploys
 railway redeploy --service web --from-source --yes
+
+# 7. Waitlist form token: Settings → API Tokens → Custom, unlimited, permissions: Waitlist-signup →
+#    create (nothing else). Pipe the key in the same way:
+pbpaste | tr -d '\n' | railway variable set STRAPI_FORM_TOKEN --stdin --service web
 ```
 
 ### Seeding production
