@@ -1,7 +1,8 @@
 'use client';
 
 import type { OrderCta } from '@/lib/content/types';
-import { useWaitlist, type WaitlistSource } from './WaitlistContext';
+import type { WaitlistSource } from '@/lib/waitlist/schema';
+import { useWaitlist } from './WaitlistContext';
 import styles from './OrderButton.module.css';
 
 type OrderButtonProps = {
