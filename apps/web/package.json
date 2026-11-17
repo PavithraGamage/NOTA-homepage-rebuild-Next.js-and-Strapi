@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@gsap/react": "2.1.2",
@@ -22,6 +23,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -32,7 +34,7 @@
     "typescript": "^5",
     "vitest": "^5.1.0"
   },
-  "description": "Next.js frontend for the NŌTA homepage rebuild",
+  "description": "Next.js frontend for the N\u014cTA homepage rebuild",
   "engines": {
     "node": "24.x",
     "npm": ">=10"
