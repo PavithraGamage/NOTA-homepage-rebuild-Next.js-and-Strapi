@@ -8,6 +8,7 @@ assignment. All content is managed in a self-hosted Strapi CMS; everything runs 
 > down when the review round closes.
 
 - **Architecture, caching and Railway setup:** [docs/architecture.md](docs/architecture.md)
+- **Content model (types, components, validation, editor experience, seed):** [docs/content-model.md](docs/content-model.md)
 - **Reference audit (what we are rebuilding and how it behaves):** [docs/reference-audit.md](docs/reference-audit.md)
 - **AI usage log:** [docs/ai-usage.md](docs/ai-usage.md)
 
@@ -28,16 +29,17 @@ Two independent apps with their own lockfiles (no workspace hoisting; Strapi is 
 
 ```bash
 # 1. Database
-docker compose up -d                      # Postgres 17 on localhost:5432
+docker compose up -d                      # Postgres 18 on localhost:5432
 
 # 2. CMS
 cd apps/cms
 cp .env.example .env                      # then replace every "change-me" with a random value
 npm install
+npm run seed                              # all homepage content and media (~1 min the first time)
 npm run develop                           # http://localhost:1337/admin → create your admin user
 
-# 3. In the admin: Settings → API Tokens → create a "Read-only" token.
-#    Content Manager → Global → set "Site name" → Publish.
+# 3. In the admin: Settings → API Tokens → Create new API Token
+#    Type "Custom", duration "Unlimited", permissions: find on Global, Homepage and Product.
 
 # 4. Web (new terminal)
 cd apps/web
@@ -52,7 +54,7 @@ Publishing in Strapi now refreshes the local site immediately: the CMS calls `ht
 
 ```bash
 cd apps/web && npm run lint && npm run typecheck && npm test && npm run build
-cd apps/cms && npm run typecheck && npm run build
+cd apps/cms && npm run typecheck && npm test && npm run build
 ```
 
 CI runs the same steps on every push (`.github/workflows/ci.yml`).
