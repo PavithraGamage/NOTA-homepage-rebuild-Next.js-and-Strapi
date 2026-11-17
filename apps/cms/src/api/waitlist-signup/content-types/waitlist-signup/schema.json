@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "waitlist_signups",
+  "info": {
+    "singularName": "waitlist-signup",
+    "pluralName": "waitlist-signups",
+    "displayName": "Waitlist signup",
+    "description": "Emails collected by the \"Stay ahead\" form. Created by the website only."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true,
+      "maxLength": 254
+    },
+    "source": {
+      "type": "enumeration",
+      "enum": [
+        "header-cta",
+        "mobile-menu-cta"
+      ],
+      "default": "header-cta",
+      "required": true
+    }
+  }
+}

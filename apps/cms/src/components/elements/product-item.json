@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_elements_product_items",
+  "info": {
+    "displayName": "Box item",
+    "icon": "gift",
+    "description": "An item that ships in the box."
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    }
+  }
+}

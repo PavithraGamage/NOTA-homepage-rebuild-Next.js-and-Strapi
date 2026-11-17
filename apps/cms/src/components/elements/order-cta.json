@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_elements_order_ctas",
+  "info": {
+    "displayName": "Order button",
+    "icon": "shoppingCart",
+    "description": "The \"Order · product · price\" button. Name and price come from the linked product."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "maxLength": 16,
+      "default": "Order"
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    }
+  }
+}

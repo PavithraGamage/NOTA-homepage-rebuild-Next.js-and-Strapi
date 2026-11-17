@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_elements_story_steps",
+  "info": {
+    "displayName": "Story step",
+    "icon": "slideshow",
+    "description": "One step of the smart-paper story: headline, card and full-screen image."
+  },
+  "options": {},
+  "attributes": {
+    "heading": {
+      "type": "text",
+      "required": true,
+      "maxLength": 80
+    },
+    "subheading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 48
+    },
+    "body": {
+      "type": "text",
+      "required": true,
+      "maxLength": 500
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_layout_preloaders",
+  "info": {
+    "displayName": "Preloader",
+    "icon": "refresh",
+    "description": "The loading screen shown on large screens before the page reveals."
+  },
+  "options": {},
+  "attributes": {
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

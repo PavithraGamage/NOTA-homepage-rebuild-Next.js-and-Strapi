@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_elements_nav_links",
+  "info": {
+    "displayName": "Navigation link",
+    "icon": "link",
+    "description": "A link in the header, mobile menu and footer that scrolls to a section."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "targetAnchor": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    }
+  }
+}

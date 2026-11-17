@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_elements_spec_groups",
+  "info": {
+    "displayName": "Spec group",
+    "icon": "layer",
+    "description": "A titled card of specification lines."
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.text-item",
+      "min": 1,
+      "max": 6
+    }
+  }
+}

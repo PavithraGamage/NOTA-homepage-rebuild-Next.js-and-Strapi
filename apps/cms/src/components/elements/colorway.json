@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_elements_colorways",
+  "info": {
+    "displayName": "Colorway",
+    "icon": "paint",
+    "description": "A product colour with its own image and text colour."
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "tagline": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    },
+    "textColor": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color",
+      "regex": "^#[0-9A-Fa-f]{6}$",
+      "required": true,
+      "default": "#FFFFFF"
+    },
+    "swatch": {
+      "type": "customField",
+      "customField": "plugin::color-picker.color",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    }
+  }
+}

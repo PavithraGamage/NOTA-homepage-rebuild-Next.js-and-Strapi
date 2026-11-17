@@ -1,0 +1,42 @@
+{
+  "collectionName": "components_sections_colorwayss",
+  "info": {
+    "displayName": "Colorways",
+    "icon": "paint",
+    "description": "The product’s colours. Colours come from the linked product."
+  },
+  "options": {},
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "isHidden": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "headingStart": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "headingEnd": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "introImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    },
+    "product": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    }
+  }
+}

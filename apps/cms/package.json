@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@strapi/database": "5.62.0",
+    "@strapi/plugin-color-picker": "5.62.0",
     "@strapi/plugin-users-permissions": "5.62.0",
     "@strapi/strapi": "5.62.0",
     "pg": "8.20.0",

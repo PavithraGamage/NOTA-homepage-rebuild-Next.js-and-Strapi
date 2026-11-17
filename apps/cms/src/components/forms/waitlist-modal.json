@@ -1,0 +1,61 @@
+{
+  "collectionName": "components_forms_waitlist_modals",
+  "info": {
+    "displayName": "Waitlist modal",
+    "icon": "envelop",
+    "description": "Copy for the \"Stay ahead\" email form, including its messages."
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "subtitle": {
+      "type": "text",
+      "required": true,
+      "maxLength": 120
+    },
+    "emailPlaceholder": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "submitLabel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 20
+    },
+    "closeLabel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 16
+    },
+    "successTitle": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "successMessage": {
+      "type": "text",
+      "required": true,
+      "maxLength": 160
+    },
+    "errorRequired": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "errorInvalidEmail": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    },
+    "errorGeneric": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    }
+  }
+}
