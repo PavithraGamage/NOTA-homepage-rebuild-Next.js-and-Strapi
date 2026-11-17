@@ -19,16 +19,26 @@ export function heroScene(section: HTMLElement) {
   const controller = new AbortController();
   const state = { progress: 0 };
   let sequence: ImageSequence | null = null;
+  let drawn = -1;
 
+  // Only repaint when the frame changes: 75 frames over 1.7 screens of scroll, so most scroll
+  // steps keep the same one.
   const draw = () => {
     if (!sequence) return;
-    const image = sequence.frames[Math.round(state.progress * (sequence.frames.length - 1))];
-    if (image) drawCover(context, image, sequence.width, sequence.height);
+    const index = Math.round(state.progress * (sequence.frames.length - 1));
+    const image = sequence.frames[index];
+    if (!image || index === drawn) return;
+    drawCover(context, image, sequence.width, sequence.height);
+    drawn = index;
   };
+  // No more canvas pixels than the source frames have: a bigger canvas only costs fill rate.
   const resize = () => {
-    const ratio = Math.min(window.devicePixelRatio, 2);
+    if (!sequence || !canvas.clientWidth || !canvas.clientHeight) return;
+    const sourceRatio = Math.min(sequence.width / canvas.clientWidth, sequence.height / canvas.clientHeight);
+    const ratio = Math.min(window.devicePixelRatio, 2, sourceRatio);
     canvas.width = Math.round(canvas.clientWidth * ratio);
     canvas.height = Math.round(canvas.clientHeight * ratio);
+    drawn = -1;
     draw();
   };
 

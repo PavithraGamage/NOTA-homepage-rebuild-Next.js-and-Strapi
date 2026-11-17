@@ -28,6 +28,7 @@ MASTER_PROMPT.md
 playwright-report/
 test-results/
 coverage/
+videos/
 
 # OS / editor
 .DS_Store

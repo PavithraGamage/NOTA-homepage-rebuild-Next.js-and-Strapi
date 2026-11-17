@@ -8,6 +8,7 @@ import { WaitlistProvider } from '@/components/site/WaitlistContext';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
 import { AnchorNavigation } from '@/components/motion/AnchorNavigation';
 import { Preloader } from '@/components/motion/Preloader';
+import { SmoothScroll } from '@/components/motion/SmoothScroll';
 
 /**
  * Rendered per request, never at build time: Railway build containers cannot reach Strapi on
@@ -46,6 +47,7 @@ export default async function HomePage() {
       </a>
       <Preloader />
       <AnchorNavigation />
+      <SmoothScroll />
       <Header chrome={chrome} />
       <main id="top" tabIndex={-1}>
         {homepage.sections.map((section) => (

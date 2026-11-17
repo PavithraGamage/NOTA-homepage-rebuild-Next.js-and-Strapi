@@ -80,6 +80,15 @@ both the CSS and the JavaScript, so layout never waits for JS.
   from the section under it (`data-header-theme`, found by hit-testing so overlapping stages work).
 - **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
   (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
+- **Wheel easing** (`lib/animation/smooth-scroll.ts`): in cinematic mode each wheel step moves a target
+  and the page glides to it (exponential, ~167 ms time constant, measured on the reference, which uses
+  Lenis). Without it a mouse wheel moves the page in ~100px jumps and the scrubbed scenes jump with it.
+  It is a few dozen lines instead of a dependency. Only the wheel is eased: keyboard, scrollbar, touch,
+  anchors, open dialogs and nested scrollers stay native, and ScrollTrigger is updated in the same frame
+  as each step.
+- **Per-frame cost** while scrolling stays small: the hero canvas repaints only when its frame changes and
+  has no more pixels than the source frames, the carousel progress touches the DOM only when the step
+  changes, and the header's colour hit-test runs about ten times a second.
 
 ## Security headers
 

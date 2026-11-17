@@ -18,7 +18,7 @@ const CHANGES = [
 export function colorwaysScene(section: HTMLElement) {
   const timeline = sceneTimeline(section);
   const slides = parts(section, 'slide');
-  const progress = section.querySelector('[data-progress]');
+  const progress = section.querySelector<HTMLElement>('[data-progress]');
 
   slides.forEach((slide, index) => {
     const image = part(slide, 'slide-image');

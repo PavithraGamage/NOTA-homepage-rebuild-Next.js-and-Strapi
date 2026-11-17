@@ -5,8 +5,13 @@ import styles from './Progress.module.css';
 
 type ProgressProps = { count: number; className?: string };
 
-/** Marks segment `index` as current. Scroll scenes call it too, so it works on plain DOM. */
-export function setProgress(progress: Element, index: number) {
+/**
+ * Marks segment `index` as current. Scroll scenes call it on every frame, so it works on plain
+ * DOM and only touches the DOM when the step actually changes.
+ */
+export function setProgress(progress: HTMLElement, index: number) {
+  if (progress.dataset.index === String(index)) return;
+  progress.dataset.index = String(index);
   progress.querySelectorAll('[data-segment]').forEach((segment, i) => {
     segment.toggleAttribute('data-current', i === index);
   });
