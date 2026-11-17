@@ -8,10 +8,17 @@ import { gsap, type ScrollTrigger } from '../gsap';
 export function showWhenPinned(element: HTMLElement) {
   // A 1px scrubbed switch rather than enter/leave callbacks: the state then follows the scroll
   // position on every refresh, including a page restored or deep-linked mid-scroll.
+  // Opacity (not visibility) keeps the text available to screen readers; pointer events stay
+  // off while it is transparent so it cannot catch clicks or the header's colour check.
   gsap.fromTo(
     element,
-    { autoAlpha: 0 },
-    { autoAlpha: 1, ease: 'none', scrollTrigger: { trigger: element, start: 'top top', end: '+=1', scrub: true } },
+    { opacity: 0, pointerEvents: 'none' },
+    {
+      opacity: 1,
+      pointerEvents: 'auto',
+      ease: 'none',
+      scrollTrigger: { trigger: element, start: 'top top', end: '+=1', scrub: true },
+    },
   );
 }
 

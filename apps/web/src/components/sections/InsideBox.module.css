@@ -38,7 +38,7 @@
 }
 
 .muted {
-  color: var(--c-grey-999);
+  color: var(--c-grey-949);
 }
 
 .card {
@@ -184,7 +184,7 @@
 
 /*
  * Scroll scene: the section slides in (hidden) while the smart-paper circle grows, the intro holds
- * for 0.44 screens while the heading fades in, then everything scrolls in normal flow. Cards are
+ * for 0.66 screens while the heading fades in, then everything scrolls in normal flow. Cards are
  * revealed through closing white stripes ("blinds", 33 design px apart), driven by --blind.
  */
 @media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
@@ -194,7 +194,7 @@
   }
 
   .intro {
-    --scene: 0.44;
+    --scene: 0.66;
     display: block;
     height: calc((var(--scene) + 1) * 100vh);
     margin-bottom: calc(var(--gutter) * var(--u));

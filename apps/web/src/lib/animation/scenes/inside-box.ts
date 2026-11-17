@@ -16,7 +16,7 @@ export function insideBoxScene(section: HTMLElement) {
   const intro = part(section, 'intro');
   const heading = part(section, 'heading');
   if (intro && heading) {
-    sceneTimeline(intro).fromTo(heading, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.33 }, 0);
+    sceneTimeline(intro).fromTo(heading, { opacity: 0 }, { opacity: 1, duration: 0.55 }, 0);
   }
 
   parts(section, 'blinds').forEach((card) => {
@@ -33,9 +33,9 @@ export function insideBoxScene(section: HTMLElement) {
     if (caption) {
       gsap.fromTo(
         caption,
-        { autoAlpha: 0, yPercent: 20 },
+        { opacity: 0, yPercent: 20 },
         {
-          autoAlpha: 1,
+          opacity: 1,
           yPercent: 0,
           ease: 'power1.out',
           scrollTrigger: { trigger: card, start: 'top 70%', end: 'top 45%', scrub: true },

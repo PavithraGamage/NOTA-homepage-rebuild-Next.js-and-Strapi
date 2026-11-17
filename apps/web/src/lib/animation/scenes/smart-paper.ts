@@ -11,7 +11,12 @@ const CHANGES = [
   [2.72, 2.89],
   [3.56, 3.78],
 ] as const;
-const OUTRO = { fade: [4.67, 5.0], progressOut: [4.44, 4.78], circle: [4.94, 5.72] } as const;
+const OUTRO = { fade: [4.67, 5.0], progressOut: [4.44, 4.78], dot: 4.94, grow: [5.0, 5.56] } as const;
+/**
+ * The circle's measured growth every 100px of scroll, as fractions of the size that just covers
+ * the screen. The scene ends when it covers; "Inside the box" takes over from there.
+ */
+const CIRCLE_GROWTH = [0.014, 0.092, 0.229, 0.433, 0.701, 1];
 
 /**
  * Smart paper: the white intro splits into six columns that drop away to reveal the first
@@ -26,7 +31,7 @@ export function smartPaperScene(section: HTMLElement) {
 
   const heading = part(section, 'intro-heading');
   if (heading)
-    timeline.to(heading, { autoAlpha: 0, duration: INTRO.headingOut[1] - INTRO.headingOut[0] }, INTRO.headingOut[0]);
+    timeline.to(heading, { opacity: 0, duration: INTRO.headingOut[1] - INTRO.headingOut[0] }, INTRO.headingOut[0]);
   const columns = part(section, 'columns');
   if (columns) {
     timeline.fromTo(
@@ -48,7 +53,7 @@ export function smartPaperScene(section: HTMLElement) {
     const image = part(step, 'step-image');
     const copy = part(step, 'step-copy');
     if (index > 0) {
-      gsap.set(copy, { autoAlpha: 0 });
+      gsap.set(copy, { opacity: 0 });
       gsap.set(image, { scale: 1.4 });
     }
     const change = CHANGES[index - 1];
@@ -57,23 +62,19 @@ export function smartPaperScene(section: HTMLElement) {
       const [start, end] = change;
       timeline.to(
         part(previous, 'step-image'),
-        { scale: 0.6, autoAlpha: 0, duration: end - start, ease: 'power2.out' },
+        { scale: 0.6, opacity: 0, duration: end - start, ease: 'power2.out' },
         start,
       );
       timeline.to(image, { scale: 1, duration: end - start, ease: 'power2.out' }, start);
-      timeline.set(part(previous, 'step-copy'), { autoAlpha: 0 }, start + 0.05);
-      timeline.set(copy, { autoAlpha: 1 }, start + 0.05);
+      timeline.set(part(previous, 'step-copy'), { opacity: 0 }, start + 0.05);
+      timeline.set(copy, { opacity: 1 }, start + 0.05);
     }
   });
 
   const last = steps.at(-1);
-  if (last) timeline.to(last, { autoAlpha: 0, duration: OUTRO.fade[1] - OUTRO.fade[0] }, OUTRO.fade[0]);
+  if (last) timeline.to(last, { opacity: 0, duration: OUTRO.fade[1] - OUTRO.fade[0] }, OUTRO.fade[0]);
   if (progress) {
-    timeline.to(
-      progress,
-      { autoAlpha: 0, duration: OUTRO.progressOut[1] - OUTRO.progressOut[0] },
-      OUTRO.progressOut[0],
-    );
+    timeline.to(progress, { opacity: 0, duration: OUTRO.progressOut[1] - OUTRO.progressOut[0] }, OUTRO.progressOut[0]);
     timeline.eventCallback('onUpdate', () => {
       const time = timeline.time();
       setProgress(progress, CHANGES.filter(([start]) => time >= start + 0.05).length);
@@ -83,16 +84,16 @@ export function smartPaperScene(section: HTMLElement) {
   const circle = part(section, 'circle');
   if (circle) {
     // Hidden until its moment, so it never shows as a dot over the steps.
-    timeline.fromTo(circle, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.001 }, OUTRO.circle[0]);
-    timeline.fromTo(
+    timeline.fromTo(circle, { autoAlpha: 0, scale: 0.01 }, { autoAlpha: 1, duration: 0.001 }, OUTRO.dot);
+    const finalScale = Math.hypot(window.innerWidth, window.innerHeight) / circle.offsetWidth;
+    timeline.to(
       circle,
-      { scale: 0.01 },
       {
-        scale: () => (Math.hypot(window.innerWidth, window.innerHeight) / circle.offsetWidth) * 1.02,
-        duration: OUTRO.circle[1] - OUTRO.circle[0],
-        ease: 'sine.in',
+        keyframes: { scale: CIRCLE_GROWTH.map((f) => Math.max(0.01, f * finalScale)) },
+        duration: OUTRO.grow[1] - OUTRO.grow[0],
+        ease: 'none',
       },
-      OUTRO.circle[0],
+      OUTRO.grow[0],
     );
   }
 }

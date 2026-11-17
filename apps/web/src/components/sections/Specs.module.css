@@ -308,9 +308,11 @@
     flex-direction: column;
   }
 
+  /* Collapsed until the scene grows them, so without JavaScript they never cover the stage. */
   .band {
     flex: 2;
     background: var(--c-black);
+    transform: scaleX(0);
   }
 
   .band:first-child {
