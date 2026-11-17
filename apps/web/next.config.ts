@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
   cacheComponents: false,
   poweredByHeader: false,
   images: {
+    // Product imagery is served at 80; Next 16 only allows qualities listed here.
+    qualities: [75, 80],
+    // Next 16 refuses to optimise images from private IPs (SSRF guard). Only a local CMS needs
+    // the exception; with a public CMS domain (production) the guard stays on.
+    dangerouslyAllowLocalIP: ['localhost', '127.0.0.1'].includes(strapiPublicUrl.hostname),
     remotePatterns: [
       {
         protocol: strapiPublicUrl.protocol.replace(':', '') as 'http' | 'https',
