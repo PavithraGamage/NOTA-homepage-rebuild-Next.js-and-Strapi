@@ -1,0 +1,211 @@
+/*
+ * Phones (320/480 design): padding 60, tiles full width, heights 320/500/250/500/320/250, gap 16;
+ *   tile 2 is a stadium, tiles 3, 4, 6 have a 100 radius. Tablet 768: padding 80, heights
+ *   600/970/500/970/600/500. Desktop: two columns 20 apart. Slot 1 top left with slot 3 under it
+ *   (right-aligned); slot 2 beside them, vertically centred; slot 4 (video) full width; slot 5
+ *   and slot 6 side by side. Sizes per range (992 / 1440 / 1920):
+ *   column 486/680/920; slot 1 577/577/787 tall; slot 3 233x192 / 330x273 / 450x393, r 60/80/120;
+ *   slot 2 588/870/1200 tall, r 150/200/300; slot 4 704/860/1160 tall, r 300/400/600;
+ *   slot 5 709x664 / 1010x664 / 1370x900; slot 6 223x310 / 330x430 / 450x600, r 60/80/120.
+ * Labels: translucent pill centred on the tile.
+ */
+.details {
+  padding: calc(60 * var(--u)) calc(var(--gutter) * var(--u));
+  background: var(--c-black);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+}
+
+.tile {
+  --h: 320;
+  position: relative;
+  height: calc(var(--h) * var(--u));
+  overflow: hidden;
+  background: #0d0d0d;
+}
+
+.tile[data-slot='2'] {
+  --h: 500;
+  border-radius: calc(1000 * var(--u));
+}
+
+.tile[data-slot='3'] {
+  --h: 250;
+  border-radius: calc(100 * var(--u));
+}
+
+.tile[data-slot='4'] {
+  --h: 500;
+  border-radius: calc(100 * var(--u));
+}
+
+.tile[data-slot='6'] {
+  --h: 250;
+  border-radius: calc(100 * var(--u));
+}
+
+.picture img,
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: calc(100% - 20 * var(--u));
+  padding: calc(12 * var(--u)) calc(16 * var(--u));
+  border-radius: calc(100 * var(--u));
+  background: var(--c-black-30);
+  color: var(--c-white);
+  white-space: nowrap;
+  backdrop-filter: blur(calc(8 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(8 * var(--u)));
+}
+
+@media (min-width: 768px) {
+  .details {
+    padding: calc(80 * var(--u)) calc(var(--gutter) * var(--u));
+  }
+
+  .tile {
+    --h: 600;
+  }
+
+  .tile[data-slot='2'],
+  .tile[data-slot='4'] {
+    --h: 970;
+  }
+
+  .tile[data-slot='3'],
+  .tile[data-slot='6'] {
+    --h: 500;
+  }
+
+  .label {
+    padding: calc(17 * var(--u)) calc(23 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .details {
+    padding: calc(var(--gutter) * var(--u));
+  }
+
+  .grid {
+    --col: 486;
+    --slot1-h: 577;
+    --slot2-h: 588;
+    --slot2-r: 150;
+    --slot3-w: 233;
+    --slot3-h: 192;
+    --slot4-h: 704;
+    --slot4-r: 300;
+    --slot5-w: 709;
+    --slot5-h: 664;
+    --slot6-w: 223;
+    --slot6-h: 310;
+    --small-r: 60;
+    display: grid;
+    grid-template-columns: calc(var(--col) * var(--u)) 1fr;
+    grid-template-rows: calc(var(--slot1-h) * var(--u)) calc(var(--slot3-h) * var(--u)) auto auto;
+    gap: calc(20 * var(--u));
+  }
+
+  .tile {
+    height: auto;
+    border-radius: 0;
+  }
+
+  .tile[data-slot='1'] {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tile[data-slot='2'] {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    height: calc(var(--slot2-h) * var(--u));
+    border-radius: calc(var(--slot2-r) * var(--u));
+  }
+
+  .tile[data-slot='3'] {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: end;
+    width: calc(var(--slot3-w) * var(--u));
+    border-radius: calc(var(--small-r) * var(--u));
+  }
+
+  .tile[data-slot='4'] {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    height: calc(var(--slot4-h) * var(--u));
+    border-radius: calc(var(--slot4-r) * var(--u));
+  }
+
+  .tile[data-slot='5'] {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    width: calc(var(--slot5-w) * var(--u));
+    height: calc(var(--slot5-h) * var(--u));
+  }
+
+  .tile[data-slot='6'] {
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: end;
+    align-self: start;
+    width: calc(var(--slot6-w) * var(--u));
+    height: calc(var(--slot6-h) * var(--u));
+    border-radius: calc(var(--small-r) * var(--u));
+  }
+
+  .label {
+    padding: calc(16 * var(--u)) calc(24 * var(--u));
+  }
+}
+
+@media (min-width: 1440px) {
+  .grid {
+    --col: 680;
+    --slot2-h: 870;
+    --slot2-r: 200;
+    --slot3-w: 330;
+    --slot3-h: 273;
+    --slot4-h: 860;
+    --slot4-r: 400;
+    --slot5-w: 1010;
+    --slot6-w: 330;
+    --slot6-h: 430;
+    --small-r: 80;
+  }
+}
+
+@media (min-width: 1920px) {
+  .grid {
+    --col: 920;
+    --slot1-h: 787;
+    --slot2-h: 1200;
+    --slot2-r: 300;
+    --slot3-w: 450;
+    --slot3-h: 393;
+    --slot4-h: 1160;
+    --slot4-r: 600;
+    --slot5-w: 1370;
+    --slot5-h: 900;
+    --slot6-w: 450;
+    --slot6-h: 600;
+    --small-r: 120;
+  }
+}

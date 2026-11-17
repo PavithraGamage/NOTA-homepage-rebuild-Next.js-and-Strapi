@@ -1,0 +1,185 @@
+/*
+ * 320: statement at +59 with a 20% hairline 16 below; eyebrow 32 under it; intro 16 under that;
+ *      cards from +40 (title, body 7 below, 28 between); video 300x201 48 below; 20 bottom.
+ * 768: statement +71 (hairline 20 below); cards in a 485-wide right column, bodies indented 117;
+ *      video 736x360.
+ * 992: statement full width (46px, 4 lines), hairline 21 below, eyebrow 20 under it.
+ * 1440: statement at 80 (55px, hairline 30 below); eyebrow left and intro in the right half
+ *       (x=720, first line indented); cards in a 430 column at x=970, bodies indented 83.
+ * 1920: statement at 120 (70px, same three lines), hairline 41 below; intro column 900 wide,
+ *       both paragraphs indented 240.
+ */
+.audience {
+  padding: calc(59 * var(--u)) calc(var(--gutter) * var(--u)) calc(20 * var(--u));
+  background: var(--c-black);
+  color: var(--c-white);
+}
+
+.statement {
+  padding-bottom: calc(16 * var(--u));
+  border-bottom: 1px solid var(--c-white-20);
+}
+
+.intro {
+  margin-top: calc(32 * var(--u));
+}
+
+.eyebrow {
+  font-weight: 500;
+  font-size: calc(var(--fs-eyebrow) * var(--u));
+  line-height: 1;
+  letter-spacing: -0.07em;
+  text-transform: uppercase;
+  color: var(--c-white-40);
+}
+
+/* Below 992px the paragraphs run on as one block, like the reference. */
+.paragraphs {
+  margin-top: calc(16 * var(--u));
+}
+
+.paragraphs p {
+  display: inline;
+}
+
+.paragraphs p + p::before {
+  content: ' ';
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: calc(28 * var(--u));
+  margin-top: calc(40 * var(--u));
+}
+
+.cardBody {
+  margin-top: calc(7 * var(--u));
+}
+
+.video {
+  display: block;
+  margin-top: calc(48 * var(--u));
+  width: 100%;
+  height: calc(201 * var(--u));
+  object-fit: cover;
+}
+
+@media (min-width: 480px) {
+  .audience {
+    padding-top: calc(60 * var(--u));
+  }
+
+  .statement {
+    padding-bottom: calc(15 * var(--u));
+  }
+}
+
+@media (min-width: 768px) {
+  .audience {
+    padding-top: calc(71 * var(--u));
+  }
+
+  .statement {
+    padding-bottom: calc(20 * var(--u));
+  }
+
+  .cards {
+    gap: calc(27 * var(--u));
+    margin: calc(43 * var(--u)) 0 0 auto;
+    width: calc(485 * var(--u));
+  }
+
+  .cardBody {
+    margin: calc(6 * var(--u)) 0 0 calc(117 * var(--u));
+  }
+
+  .video {
+    margin-top: calc(47 * var(--u));
+    height: calc(360 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .audience {
+    padding: calc(80 * var(--u)) calc(var(--gutter) * var(--u)) calc(80 * var(--u));
+  }
+
+  /* On desktop the reference reveals this statement word by word; its word wrappers leave
+     wider gaps (+0.13em per space, measured at 992, 1440 and 1920), which set the breaks. */
+  .statement {
+    padding: 0 0 calc(21 * var(--u));
+    word-spacing: 0.13em;
+  }
+
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr calc(680 * var(--u));
+    margin-top: calc(20 * var(--u));
+  }
+
+  .paragraphs {
+    margin-top: 0;
+  }
+
+  .paragraphs p {
+    display: block;
+  }
+
+  .paragraphs p + p::before {
+    content: none;
+  }
+
+  .paragraphs p:first-child {
+    text-indent: calc(148 * var(--u));
+  }
+
+  .paragraphs p + p {
+    text-indent: calc(193 * var(--u));
+  }
+
+  .cards {
+    gap: calc(30 * var(--u));
+    width: calc(430 * var(--u));
+    margin-top: calc(120 * var(--u));
+  }
+
+  .cardBody {
+    margin-left: calc(83 * var(--u));
+  }
+
+  .video {
+    margin-top: calc(80 * var(--u));
+    height: calc(650 * var(--u));
+  }
+}
+
+@media (min-width: 1440px) {
+  .statement {
+    padding: 0 calc(140 * var(--u)) calc(30 * var(--u)) 0;
+  }
+
+  .intro {
+    margin-top: calc(30 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .audience {
+    padding-top: calc(120 * var(--u));
+  }
+
+  .statement {
+    padding: 0 calc(287 * var(--u)) calc(41 * var(--u)) 0;
+  }
+
+  .intro {
+    grid-template-columns: 1fr calc(900 * var(--u));
+    margin-top: calc(40 * var(--u));
+  }
+
+  .paragraphs p:first-child,
+  .paragraphs p + p {
+    text-indent: calc(240 * var(--u));
+  }
+}

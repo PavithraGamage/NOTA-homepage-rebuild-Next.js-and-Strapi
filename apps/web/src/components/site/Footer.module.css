@@ -1,0 +1,151 @@
+/* Phones (320): tagline at 16, Navigation/Year row at 134, links every 24, credits at 344, 455 tall.
+   Desktop: tagline | navigation column | year, credits along the bottom. 992: 311 tall, padding
+   40/20/20, navigation at 496. 1440: 370 tall, padding 80/40/40, navigation on the centre line.
+   1920: 435 tall, navigation at 980. */
+.footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'tagline tagline'
+    'nav year'
+    'bottom bottom';
+  padding: calc(16 * var(--u)) calc(var(--gutter) * var(--u));
+  min-height: calc(455 * var(--u));
+  background: var(--c-black);
+  color: var(--c-white);
+}
+
+.tagline {
+  grid-area: tagline;
+  max-width: calc(275 * var(--u));
+}
+
+@media (min-width: 480px) {
+  .tagline {
+    max-width: none;
+  }
+}
+
+.nav {
+  grid-area: nav;
+  margin-top: calc(32 * var(--u));
+}
+
+.year {
+  grid-area: year;
+  margin-top: calc(32 * var(--u));
+  text-align: right;
+}
+
+.label {
+  color: var(--c-white-55);
+  margin-bottom: calc(16 * var(--u));
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+}
+
+.link {
+  font-weight: 600;
+  font-size: calc(var(--fs-ui) * var(--u));
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+a.link {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.25s ease;
+}
+
+a.link:hover,
+a.link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.bottom {
+  grid-area: bottom;
+  align-self: end;
+  margin-top: calc(82 * var(--u));
+}
+
+/* 768: tagline | navigation at x=392 | year right; credits under the navigation column. */
+@media (min-width: 768px) {
+  .footer {
+    grid-template-columns: calc(376 * var(--u)) 1fr auto;
+    grid-template-areas:
+      'tagline nav year'
+      'bottom bottom bottom';
+    min-height: calc(347 * var(--u));
+  }
+
+  .tagline {
+    max-width: calc(278 * var(--u));
+  }
+
+  .nav,
+  .year {
+    margin-top: 0;
+  }
+
+  .label {
+    margin-bottom: calc(15 * var(--u));
+  }
+
+  .links {
+    gap: calc(5 * var(--u));
+  }
+
+  .bottom {
+    margin-top: calc(60 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .footer {
+    grid-template-columns: calc(476 * var(--u)) 1fr auto;
+    padding: calc(40 * var(--u)) calc(var(--gutter) * var(--u)) calc(20 * var(--u));
+    min-height: calc(311 * var(--u));
+  }
+
+  .tagline {
+    max-width: calc(390 * var(--u));
+  }
+
+  .label {
+    margin-bottom: calc(18 * var(--u));
+  }
+
+  /* Rows are the 16px link line plus a 6 gap (22 apart), not the list item's taller line box. */
+  .links {
+    gap: calc(6 * var(--u));
+    line-height: 1;
+  }
+
+  .bottom {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .footer {
+    grid-template-columns: calc(680 * var(--u)) 1fr auto;
+    padding: calc(80 * var(--u)) calc(var(--gutter) * var(--u)) calc(40 * var(--u));
+    min-height: calc(370 * var(--u));
+  }
+
+  .label {
+    margin-bottom: calc(15 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .footer {
+    grid-template-columns: calc(940 * var(--u)) 1fr auto;
+    min-height: calc(435 * var(--u));
+  }
+}

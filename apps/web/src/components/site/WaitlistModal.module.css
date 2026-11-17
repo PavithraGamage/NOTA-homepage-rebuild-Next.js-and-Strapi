@@ -1,0 +1,182 @@
+/* Centred white card, radius 4: title, #666 subtitle, underline field (1px black 20%), black
+   button with the label on the left, grey Close. Measured per range (card height):
+   320 full width minus the gutter (285), 480 (304), 768 (500, labels 24px), 992+ 550 wide (460). */
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--gutter) * var(--u));
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s;
+}
+
+.root[data-open='true'] {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 0.3s ease,
+    visibility 0s;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.card {
+  --pad-top: 19;
+  --pad-x: 10;
+  --pad-bottom: 28;
+  --ui: 14;
+  --subtitle-gap: 1;
+  --form-gap: 19;
+  --input-pad: 1;
+  --error-h: 20;
+  --button-h: 40;
+  --close-gap: 30;
+  position: relative;
+  width: 100%;
+  padding: calc(var(--pad-top) * var(--u)) calc(var(--pad-x) * var(--u)) calc(var(--pad-bottom) * var(--u));
+  border-radius: calc(4 * var(--u));
+  background: var(--c-white);
+  color: var(--c-black);
+  text-align: center;
+  transform: translateY(calc(12 * var(--u)));
+  transition: transform 0.3s ease;
+}
+
+.root[data-open='true'] .card {
+  transform: none;
+}
+
+.card .input,
+.card .submit,
+.card .close {
+  font-size: calc(var(--ui) * var(--u));
+}
+
+.subtitle {
+  margin-top: calc(var(--subtitle-gap) * var(--u));
+  color: var(--c-grey-666);
+}
+
+.form {
+  margin-top: calc(var(--form-gap) * var(--u));
+  text-align: left;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0 0 calc(var(--input-pad) * var(--u));
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: transparent;
+  color: var(--c-black);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.input:focus {
+  border-bottom-color: var(--c-black);
+}
+
+.form[data-state='error'] .input {
+  color: var(--c-error);
+  border-bottom-color: var(--c-error);
+}
+
+.error {
+  min-height: calc(var(--error-h) * var(--u));
+  padding-top: calc(6 * var(--u));
+  color: var(--c-error);
+  font-size: calc(10 * var(--u));
+  line-height: 1.2;
+}
+
+.submit {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: calc(var(--button-h) * var(--u));
+  padding: 0 calc(20 * var(--u));
+  border-radius: calc(4 * var(--u));
+  background: var(--c-black);
+  color: var(--c-white);
+  transition: background-color 0.25s ease;
+}
+
+.submit:hover {
+  background: #1f1f1f;
+}
+
+.form[data-state='error'] .submit {
+  background: var(--c-error);
+}
+
+.dot {
+  width: calc(5 * var(--u));
+  height: calc(5 * var(--u));
+  margin-left: calc(10 * var(--u));
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.close {
+  margin-top: calc(var(--close-gap) * var(--u));
+  color: var(--c-grey-666);
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: var(--c-black);
+}
+
+@media (min-width: 480px) {
+  .card {
+    --pad-top: 22;
+    --pad-bottom: 33;
+    --subtitle-gap: 0;
+    --form-gap: 18;
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    --pad-top: 75;
+    --pad-bottom: 89;
+    --ui: 24;
+    --subtitle-gap: 6;
+    --form-gap: 23;
+    --input-pad: 1;
+    --error-h: 30;
+    --button-h: 60;
+    --close-gap: 20;
+  }
+}
+
+@media (min-width: 992px) {
+  .card {
+    --pad-top: 41;
+    --pad-x: 20;
+    --pad-bottom: 62;
+    --ui: 16;
+    --subtitle-gap: 7;
+    --form-gap: 29;
+    --input-pad: 5;
+    --error-h: 35;
+    --close-gap: 43;
+    width: calc(550 * var(--u));
+  }
+}

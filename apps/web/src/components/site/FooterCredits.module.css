@@ -1,0 +1,244 @@
+/* Phones (320): copyright left, credits stacked at x=168. Desktop: credits start at the
+   navigation column with the second pair right-aligned; at 992 the first pair stacks around its
+   dot, from 1440 everything sits on one row. Credits are #666, 600 weight. */
+.credits {
+  display: grid;
+  grid-template-columns: calc(158 * var(--u)) 1fr;
+  row-gap: calc(15 * var(--u));
+  align-items: start;
+}
+
+.copyright {
+  grid-row: span 2;
+  color: var(--c-grey-666);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.dotted .item + .item {
+  margin-top: calc(5 * var(--u));
+}
+
+.spaced {
+  gap: calc(5 * var(--u));
+}
+
+.credit {
+  color: var(--c-grey-666);
+  font-weight: 600;
+  font-size: calc(var(--fs-ui) * var(--u));
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.25s ease;
+}
+
+.credit:hover,
+.credit:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+.dot {
+  width: calc(6 * var(--u));
+  height: calc(6 * var(--u));
+  margin-bottom: calc(5 * var(--u));
+  border-radius: 50%;
+  background: var(--c-white);
+}
+
+/* Same line height as the other credits, so the row is as tall as its text. */
+.anchor {
+  position: relative;
+  line-height: 1;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+}
+
+/* Measured at 1440: ~330x430 card with the stage gradient, anchored above the credit,
+   names in Instrument Serif 30, two groups separated by a gap. */
+.popover {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80 * var(--u));
+  z-index: 71;
+  transform: translateX(-50%);
+  width: min(calc(300 * var(--u)), 90vw);
+  padding: calc(40 * var(--u)) calc(20 * var(--u));
+  background: var(--stage-gradient);
+  color: var(--c-white);
+  text-align: center;
+  animation: popover-in 0.25s ease;
+}
+
+.popoverClose {
+  position: absolute;
+  top: calc(12 * var(--u));
+  right: calc(12 * var(--u));
+  width: calc(22 * var(--u));
+  height: calc(22 * var(--u));
+}
+
+.names {
+  font-family: var(--font-display);
+  font-size: calc(var(--fs-credit) * var(--u));
+  line-height: 1.3;
+  letter-spacing: -0.03em;
+}
+
+.names + .names {
+  margin-top: calc(18 * var(--u));
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(10 * var(--u)));
+  }
+}
+
+/* Mobile menu (measured at 320): no dot on phones, first pair 8 apart, groups 21 apart. */
+.menu {
+  row-gap: calc(21 * var(--u));
+}
+
+.menu .dot {
+  display: none;
+  background: var(--c-grey-666);
+}
+
+.menu .dotted .item + .item {
+  margin-top: calc(8 * var(--u));
+}
+
+/* 768: two credit rows under the navigation column (x=392), copyright beside the second row. */
+@media (min-width: 768px) {
+  .credits {
+    grid-template-columns: calc(376 * var(--u)) 1fr;
+    row-gap: calc(9 * var(--u));
+  }
+
+  .copyright {
+    grid-row: 1 / span 2;
+    align-self: end;
+    color: var(--c-white-50);
+  }
+
+  .group,
+  .item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dotted .item + .item {
+    margin-top: 0;
+  }
+
+  .dot {
+    margin: 0 calc(10 * var(--u));
+  }
+
+  .spaced {
+    gap: 0.25em;
+  }
+}
+
+/* Desktop: copyright | first pair (stacked at 992) | second pair right-aligned. */
+@media (min-width: 992px) {
+  .credits {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .copyright {
+    width: calc(476 * var(--u));
+  }
+
+  .dotted,
+  .dotted .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dotted .dot {
+    margin: calc(6 * var(--u)) 0 calc(5 * var(--u));
+  }
+
+  .spaced {
+    margin-left: auto;
+  }
+
+  .popover {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 16 * var(--u));
+    width: calc(330 * var(--u));
+    padding: calc(40 * var(--u)) calc(30 * var(--u));
+  }
+}
+
+@media (min-width: 1440px) {
+  .credits {
+    align-items: baseline;
+  }
+
+  .copyright {
+    width: calc(680 * var(--u));
+  }
+
+  .dotted,
+  .dotted .item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .dotted .dot {
+    margin: 0 calc(10 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .copyright {
+    width: calc(940 * var(--u));
+  }
+}
+
+/* Mobile menu at 768: 14px credits, rows 10 apart with a grey dot, copyright on the first row. */
+@media (min-width: 768px) {
+  .menu {
+    row-gap: calc(10 * var(--u));
+  }
+
+  .menu .credit {
+    font-size: calc(14 * var(--u));
+  }
+
+  .menu .dot {
+    display: block;
+  }
+
+  .menu .dotted .item + .item {
+    margin-top: 0;
+  }
+
+  .menu .copyright {
+    align-self: start;
+    color: var(--c-grey-666);
+  }
+}

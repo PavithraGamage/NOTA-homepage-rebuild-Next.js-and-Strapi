@@ -1,0 +1,178 @@
+/*
+ * 320: heading centred in a 680 panel; kit card 300x440 with copy top-left (inset 16, 13);
+ *      statement 40 below (centred serif); items 300x440, 80 below, 16 apart; 16 bottom.
+ * 480: panel 680; card 448x440; statement and items 60 apart.
+ * 768: panel 560; kit 736x700, items 736x630; copy top-right (title 485 wide, body 352 wide).
+ * Desktop: heading panel 100vh; kit and items are 100vh minus the gutters (820 at 1440x900),
+ *   items side by side 20 apart; statement centred. 992/1440: copy top-right 20 in (title 360,
+ *   body 300), statement 860/1150 wide. 1920: copy 40 in (title 430, body 350), statement 1415.
+ */
+.insideBox {
+  --card-h: 440;
+  --item-h: 440;
+  --gap: 40;
+  --items-gap: 80;
+  padding: 0 calc(var(--gutter) * var(--u)) calc(16 * var(--u));
+  background: var(--c-white);
+  color: var(--c-black);
+}
+
+.intro {
+  display: grid;
+  place-items: center;
+  height: calc(680 * var(--u));
+}
+
+.heading {
+  text-align: center;
+}
+
+.muted,
+.strong {
+  display: block;
+}
+
+.muted {
+  color: var(--c-grey-999);
+}
+
+.card {
+  position: relative;
+  height: calc(var(--card-h) * var(--u));
+  overflow: hidden;
+  background: var(--c-panel);
+}
+
+.cardImage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.caption {
+  position: absolute;
+  top: calc(13 * var(--u));
+  left: calc(16 * var(--u));
+  right: calc(16 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(7 * var(--u));
+}
+
+.statement {
+  margin: calc(var(--gap) * var(--u)) 0 calc(var(--items-gap) * var(--u));
+  text-align: center;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+}
+
+.item {
+  height: calc(var(--item-h) * var(--u));
+}
+
+@media (min-width: 480px) {
+  .insideBox {
+    --gap: 60;
+    --items-gap: 60;
+  }
+}
+
+@media (min-width: 768px) {
+  .insideBox {
+    --card-h: 700;
+    --item-h: 630;
+    --gap: 106;
+    --items-gap: 106;
+  }
+
+  .intro {
+    height: calc(560 * var(--u));
+    margin-bottom: calc(16 * var(--u));
+  }
+
+  .caption {
+    top: calc(32 * var(--u));
+    left: auto;
+    right: calc(16 * var(--u));
+    width: calc(485 * var(--u));
+    gap: calc(10 * var(--u));
+  }
+
+  .captionBody {
+    align-self: flex-end;
+    width: calc(352 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .insideBox {
+    --gap: 160;
+    --items-gap: 160;
+    padding-bottom: calc(var(--gutter) * var(--u));
+  }
+
+  .intro {
+    height: 100vh;
+    margin-bottom: 0;
+  }
+
+  .card,
+  .item {
+    height: calc(100vh - 2 * var(--gutter) * var(--u));
+  }
+
+  .caption {
+    top: calc(20 * var(--u));
+    right: calc(20 * var(--u));
+    width: calc(360 * var(--u));
+  }
+
+  .captionBody {
+    width: calc(300 * var(--u));
+  }
+
+  .statement {
+    max-width: calc(870 * var(--u));
+    margin-left: auto;
+    margin-right: auto;
+    font-size: calc(var(--fs-box-statement) * var(--u));
+    letter-spacing: -0.04em;
+  }
+
+  .items {
+    flex-direction: row;
+    gap: calc(20 * var(--u));
+  }
+
+  .item {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1440px) {
+  .statement {
+    max-width: calc(1150 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .caption {
+    top: calc(40 * var(--u));
+    right: calc(40 * var(--u));
+    width: calc(430 * var(--u));
+  }
+
+  .captionBody {
+    width: calc(350 * var(--u));
+  }
+
+  .statement {
+    max-width: calc(1415 * var(--u));
+  }
+}

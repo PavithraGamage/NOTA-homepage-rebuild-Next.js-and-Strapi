@@ -1,0 +1,123 @@
+/* Measured at 320: white panel, 56px bar with hairline, links 17/600 centred every 39px,
+   300x238 stadium image with the order pill centred, credits pinned to the bottom. */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 0 calc(var(--gutter) * var(--u)) calc(10 * var(--u));
+  background: var(--c-white);
+  color: var(--c-black);
+  overflow-y: auto;
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.7, 0, 0.3, 1),
+    visibility 0s linear 0.45s;
+}
+
+.menu[data-open='true'] {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform 0.45s cubic-bezier(0.7, 0, 0.3, 1),
+    visibility 0s;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: calc(56 * var(--u));
+  border-bottom: 1px solid var(--c-black-20);
+}
+
+.wordmark {
+  display: block;
+  width: calc(56 * var(--u));
+  background: currentColor;
+  -webkit-mask: var(--mask) no-repeat center / contain;
+  mask: var(--mask) no-repeat center / contain;
+}
+
+.close {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(24 * var(--u));
+  height: calc(24 * var(--u));
+  transform: translate(-50%, -50%);
+}
+
+.mark {
+  margin-left: auto;
+  width: calc(25 * var(--u));
+  height: auto;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(22 * var(--u));
+  margin-top: calc(24 * var(--u));
+}
+
+.link {
+  font-weight: 600;
+  font-size: calc(17 * var(--u));
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.feature {
+  position: relative;
+  flex: none;
+  margin-top: calc(61 * var(--u));
+}
+
+.featureImage img {
+  width: 100%;
+  height: calc(238 * var(--u));
+  object-fit: cover;
+  border-radius: calc(1000 * var(--u));
+}
+
+.cta {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.credits {
+  margin-top: auto;
+  padding-top: calc(40 * var(--u));
+}
+
+@media (min-width: 768px) {
+  .bar {
+    height: calc(57 * var(--u));
+  }
+
+  .links {
+    gap: calc(28 * var(--u));
+    margin-top: calc(48 * var(--u));
+  }
+
+  .link {
+    font-size: calc(24 * var(--u));
+  }
+
+  .featureImage img {
+    height: calc(560 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .menu {
+    display: none;
+  }
+}

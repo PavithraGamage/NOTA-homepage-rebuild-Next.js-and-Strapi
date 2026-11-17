@@ -1,0 +1,243 @@
+/*
+ * 320: heading at 52, horizontal pen 300x47 (+23), cards from +32; title card (pad 19, r 8) sits
+ *      1px above the list card; rows: text + 15 + hairline, 15 apart, 8px dot on the right.
+ * 768: cards (485 wide) left, upright pen 219x1026 right, both 66 below the heading.
+ * Desktop: a 100vh white stage; the pen stands on the bottom edge and the cards sit a fixed
+ *   distance above it, centred. 992 is laid out in vh (heading at 5.6vh, pen 71vh, cards 300
+ *   wide, 10 apart, 12.6vh up, padding 2.67vh); 1440 heading at 66, pen 66vh, cards 400/20,
+ *   95 up, padding 30, r 17.4, rows 50 apart; 1920 heading at 106, pen 68vh, cards 430/40,
+ *   194 up, padding 40, r 23.2.
+ */
+.specs {
+  --card-pad: 19;
+  --card-radius: 8;
+  position: relative;
+  padding: calc(52 * var(--u)) calc(var(--gutter) * var(--u)) calc(16 * var(--u));
+  background: var(--c-white);
+  color: var(--c-black);
+}
+
+.heading {
+  text-align: center;
+}
+
+.muted,
+.strong {
+  display: block;
+}
+
+.muted {
+  color: var(--c-grey-666);
+}
+
+.pen {
+  margin-top: calc(23 * var(--u));
+}
+
+.pen img {
+  width: 100%;
+  height: auto;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+  margin-top: calc(32 * var(--u));
+}
+
+.groupTitle,
+.items {
+  padding: calc(var(--card-pad) * var(--u));
+  border: 1px solid var(--c-white-50);
+  border-radius: calc(var(--card-radius) * var(--u));
+  background: linear-gradient(180deg, #f6f6f6 0%, #f9f9f9 100%);
+}
+
+.groupTitle {
+  /* Phones: the reference title card is 53 tall, i.e. 14 below the title instead of 19. */
+  padding-bottom: calc((var(--card-pad) - 5) * var(--u));
+}
+
+.items {
+  margin-top: 1px;
+  display: flex;
+  flex-direction: column;
+  gap: calc(15 * var(--u));
+}
+
+.item {
+  position: relative;
+  padding: 0 calc(16 * var(--u)) calc(15 * var(--u)) 0;
+  border-bottom: 1px solid var(--c-black-10);
+}
+
+.item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.item::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: calc(5 * var(--u));
+  width: calc(8 * var(--u));
+  height: calc(8 * var(--u));
+  border-radius: 50%;
+  background: var(--c-black-20);
+}
+
+@media (min-width: 480px) {
+  .specs {
+    padding-top: calc(50 * var(--u));
+  }
+
+  .pen {
+    margin-top: calc(22 * var(--u));
+  }
+}
+
+@media (min-width: 768px) {
+  .groupTitle {
+    padding-bottom: calc(var(--card-pad) * var(--u));
+  }
+
+  .specs {
+    --card-pad: 23;
+    display: grid;
+    grid-template-columns: calc(485 * var(--u)) 1fr;
+    grid-template-areas:
+      'heading heading'
+      'groups pen';
+    padding-top: calc(67 * var(--u));
+    padding-bottom: 0;
+  }
+
+  .heading {
+    grid-area: heading;
+  }
+
+  .pen {
+    grid-area: pen;
+    justify-self: end;
+    margin-top: calc(66 * var(--u));
+  }
+
+  .pen img {
+    width: calc(219 * var(--u));
+    height: calc(1026 * var(--u));
+    object-fit: cover;
+  }
+
+  .groups {
+    grid-area: groups;
+    gap: calc(31 * var(--u));
+    margin-top: calc(66 * var(--u));
+  }
+}
+
+@media (min-width: 992px) {
+  .specs {
+    --card-radius: 12;
+    --card-w: 300;
+    --card-gap: 10;
+    --card-pad-block: 2.67vh;
+    --card-pad-inline: calc(19 * var(--u));
+    --row-pad: 1.13vh;
+    --row-gap: 1.4vh;
+    display: block;
+    height: 100vh;
+    padding: calc(5.6vh - 14 * var(--u)) 0 0;
+    overflow: hidden;
+  }
+
+  .pen {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    margin: 0;
+    transform: translateX(-50%);
+  }
+
+  .pen img {
+    width: auto;
+    height: 71vh;
+  }
+
+  /* The pen passes behind the cards, which frost it (measured fill: black 2%). */
+  .groups {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 12.6vh;
+    flex-direction: row;
+    justify-content: center;
+    gap: calc(var(--card-gap) * var(--u));
+    margin: 0;
+  }
+
+  .group {
+    flex: 0 0 calc(var(--card-w) * var(--u));
+  }
+
+  .groupTitle,
+  .items {
+    padding: var(--card-pad-block) var(--card-pad-inline);
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.55) 100%), rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(calc(14 * var(--u)));
+    -webkit-backdrop-filter: blur(calc(14 * var(--u)));
+  }
+
+  .items {
+    gap: var(--row-gap);
+  }
+
+  .item {
+    padding-bottom: var(--row-pad);
+  }
+}
+
+@media (min-width: 1440px) {
+  .specs {
+    --card-radius: 17.4;
+    --card-w: 400;
+    --card-gap: 20;
+    --card-pad-block: calc(30 * var(--u));
+    --card-pad-inline: calc(30 * var(--u));
+    --row-pad: calc(16 * var(--u));
+    --row-gap: calc(13 * var(--u));
+    padding-top: calc(66 * var(--u));
+  }
+
+  .pen img {
+    height: 66vh;
+  }
+
+  .groups {
+    bottom: calc(95 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .specs {
+    --card-radius: 23.2;
+    --card-w: 430;
+    --card-gap: 40;
+    --card-pad-block: calc(40 * var(--u));
+    --card-pad-inline: calc(40 * var(--u));
+    --row-pad: calc(21 * var(--u));
+    --row-gap: calc(17 * var(--u));
+    padding-top: calc(106 * var(--u));
+  }
+
+  .pen img {
+    height: 68vh;
+  }
+
+  .groups {
+    bottom: calc(194 * var(--u));
+  }
+}

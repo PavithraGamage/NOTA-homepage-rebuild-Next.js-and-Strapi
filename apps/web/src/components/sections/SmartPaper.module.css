@@ -1,0 +1,228 @@
+/*
+ * Intro: white panel with the heading centred (phones 100svh, tablet 560, desktop 100vh).
+ * Steps, 320/480: 680 tall (never taller than the screen), headline at 16/gutter, cards (white
+ *   5%, r 8, pad 20 20 16.8) ending 17 above the progress, progress 16 from the bottom.
+ *   768: 1024 tall (same cap), headline at 25, pad 24.
+ * Desktop: full-screen; headline at gutter/40; cards at the bottom right, 40 up; progress 40
+ *   from the bottom. Cards: 992 320 wide (pad 20, r 16), 1440 400 (pad 30), 1920 430 (pad 40,
+ *   r 21.3).
+ */
+.smartPaper {
+  background: var(--c-black);
+}
+
+.intro {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: 0 calc(var(--gutter) * var(--u));
+  background: var(--c-white);
+  color: var(--c-black);
+}
+
+.heading {
+  text-align: center;
+}
+
+.muted,
+.strong {
+  display: block;
+}
+
+.muted {
+  color: var(--c-grey-666);
+}
+
+.stage {
+  position: relative;
+  color: var(--c-white);
+}
+
+.track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.step {
+  --pad: 20;
+  --step-h: 680;
+  position: relative;
+  flex: 0 0 100%;
+  height: min(calc(var(--step-h) * var(--u)), 100svh);
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* Darkens the top and bottom of every image so the copy stays readable. */
+.step::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.35) 0%,
+    transparent 28%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+}
+
+.image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stepHeading {
+  position: absolute;
+  z-index: 1;
+  top: calc(16 * var(--u));
+  left: calc(var(--gutter) * var(--u));
+  right: calc(var(--gutter) * var(--u));
+}
+
+.cards {
+  position: absolute;
+  z-index: 1;
+  left: calc(var(--gutter) * var(--u));
+  right: calc(var(--gutter) * var(--u));
+  bottom: calc(35 * var(--u));
+}
+
+.card {
+  padding: calc(var(--pad) * var(--u)) calc(var(--pad) * var(--u)) calc(var(--pad) * 0.84 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: var(--c-white-05);
+  backdrop-filter: blur(calc(12 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(12 * var(--u)));
+}
+
+.progress {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: calc(16 * var(--u));
+}
+
+@media (min-width: 768px) {
+  .intro {
+    min-height: calc(560 * var(--u));
+  }
+
+  .step {
+    --pad: 24;
+    --step-h: 1024;
+  }
+
+  .stepHeading {
+    top: calc(25 * var(--u));
+    right: auto;
+    max-width: calc(560 * var(--u));
+  }
+
+  .cards {
+    right: auto;
+    bottom: calc(16 * var(--u));
+    width: calc(485 * var(--u));
+  }
+
+  /* Tablet: progress sits at the bottom right, level with the cards. */
+  .progress {
+    left: auto;
+    right: calc(var(--gutter) * var(--u));
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 992px) {
+  .intro {
+    min-height: 100vh;
+  }
+
+  .stage {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .track {
+    display: block;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Steps share the stage; the first is shown at rest and the scroll scene reveals the rest. */
+  .step {
+    --pad: 20;
+    position: absolute;
+    inset: 0;
+    height: auto;
+  }
+
+  .step:not([data-step='0']) {
+    visibility: hidden;
+  }
+
+  .step::after {
+    background: rgba(0, 0, 0, 0.043);
+  }
+
+  .stepHeading {
+    top: calc(40 * var(--u));
+    left: calc(var(--gutter) * var(--u));
+    max-width: none;
+  }
+
+  .cards {
+    left: auto;
+    right: calc(var(--gutter) * var(--u));
+    bottom: calc(40 * var(--u));
+    width: calc(320 * var(--u));
+  }
+
+  .card {
+    padding: calc(var(--pad) * var(--u));
+    border-radius: calc(16 * var(--u));
+  }
+
+  .progress {
+    left: 0;
+    right: 0;
+    justify-content: center;
+    bottom: calc(40 * var(--u));
+  }
+}
+
+@media (min-width: 1440px) {
+  .step {
+    --pad: 30;
+  }
+
+  .cards {
+    width: calc(400 * var(--u));
+  }
+}
+
+@media (min-width: 1920px) {
+  .step {
+    --pad: 40;
+  }
+
+  .cards {
+    width: calc(430 * var(--u));
+  }
+
+  .card {
+    border-radius: calc(21.3 * var(--u));
+  }
+}
