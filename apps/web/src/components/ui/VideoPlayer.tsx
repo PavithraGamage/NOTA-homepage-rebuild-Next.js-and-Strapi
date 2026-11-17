@@ -11,8 +11,10 @@ type VideoPlayerProps = {
 };
 
 /**
- * Muted inline video that only downloads and plays once it is near the viewport, and never
- * autoplays for visitors who prefer reduced motion (they see the poster or first frame).
+ * Muted inline video that downloads nothing until it is within a screen of the viewport, then
+ * plays when mostly visible. Visitors who prefer reduced motion get the first frame, no
+ * autoplay. (The source files keep their index at the end, so even "metadata" would fetch
+ * most of the file on page load; deferring keeps them out of the first paint.)
  */
 export function VideoPlayer({ video, className, loop = false }: VideoPlayerProps) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -20,11 +22,22 @@ export function VideoPlayer({ video, className, loop = false }: VideoPlayerProps
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const near = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        near.disconnect();
+        element.preload = 'auto';
+        element.load();
+      },
+      { rootMargin: '100% 0px' },
+    );
+    near.observe(element);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => near.disconnect();
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           void element.play().catch(() => {
             // Autoplay can be refused (e.g. low-power mode); the poster/first frame stays visible.
           });
@@ -35,7 +48,10 @@ export function VideoPlayer({ video, className, loop = false }: VideoPlayerProps
       { threshold: 0.35 },
     );
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      near.disconnect();
+      observer.disconnect();
+    };
   }, [loop]);
 
   return (
@@ -45,7 +61,7 @@ export function VideoPlayer({ video, className, loop = false }: VideoPlayerProps
       muted
       playsInline
       loop={loop}
-      preload="metadata"
+      preload="none"
       poster={video.poster?.url}
       aria-label={video.description}
       aria-hidden={video.description ? undefined : true}

@@ -43,7 +43,13 @@ type PictureProps = {
  * (AVIF/WebP at the widths `sizes` asks for), with the main image as the <img> fallback.
  */
 export function Picture({ image, sizes, className, priority = false }: PictureProps) {
-  const common = { alt: image.alt, sizes, quality: 80, priority };
+  // Next 16 deprecates `priority`; for a <picture> its docs recommend fetchPriority instead.
+  const common = {
+    alt: image.alt,
+    sizes,
+    quality: 80,
+    ...(priority ? { fetchPriority: 'high' as const, loading: 'eager' as const } : {}),
+  };
   const { props: img } = getImageProps({
     ...common,
     src: image.image.url,
