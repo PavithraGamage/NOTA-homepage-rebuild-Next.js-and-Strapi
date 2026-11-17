@@ -30,7 +30,7 @@ export function Colorways({ section }: { section: ColorwaysSection }) {
       aria-label={`${section.headingStart} ${section.headingEnd}`}
     >
       <div className={styles.stage}>
-        <ol className={styles.track} data-carousel-track>
+        <ol className={styles.track} data-carousel-track aria-label={`${section.headingStart} ${section.headingEnd}`}>
           {slides.map((slide, index) => (
             <li
               key={slide.key}

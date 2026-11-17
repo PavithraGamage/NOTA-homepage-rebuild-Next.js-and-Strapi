@@ -47,7 +47,7 @@ export function specsScene(section: HTMLElement) {
   if (heading) {
     // Hidden until the middle columns have covered the hero, then centred, then up to its place.
     const toCentre = () => window.innerHeight / 2 - (heading.offsetTop + heading.offsetHeight / 2);
-    timeline.fromTo(heading, { autoAlpha: 0, y: toCentre }, { autoAlpha: 1, duration: 0.001 }, HEADING.show);
+    timeline.fromTo(heading, { opacity: 0, y: toCentre }, { opacity: 1, duration: 0.001 }, HEADING.show);
     timeline.to(heading, { y: 0, duration: HEADING.end - HEADING.start, ease: 'sine.inOut' }, HEADING.start);
   }
 

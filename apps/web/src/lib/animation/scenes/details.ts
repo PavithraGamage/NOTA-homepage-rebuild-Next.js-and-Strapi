@@ -11,8 +11,8 @@ export function detailsScene(section: HTMLElement) {
     const tile = media.parentElement ?? media;
     gsap.fromTo(
       media,
-      { autoAlpha: 0 },
-      { autoAlpha: 1, ease: 'none', scrollTrigger: { trigger: tile, start: 'top 85%', end: 'top 72%', scrub: true } },
+      { opacity: 0 },
+      { opacity: 1, ease: 'none', scrollTrigger: { trigger: tile, start: 'top 85%', end: 'top 72%', scrub: true } },
     );
     if (media.dataset.kind !== 'video') {
       gsap.fromTo(

@@ -25,6 +25,11 @@ export function Progress({ count, className }: ProgressProps) {
     const track = progress?.parentElement?.querySelector<HTMLElement>('[data-carousel-track]');
     if (!progress || !track) return;
 
+    // Keyboard users can reach and scroll the track (arrow keys) wherever it actually scrolls.
+    const updateFocusable = () => {
+      if (track.scrollWidth > track.clientWidth) track.tabIndex = 0;
+      else track.removeAttribute('tabindex');
+    };
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -34,8 +39,12 @@ export function Progress({ count, className }: ProgressProps) {
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    updateFocusable();
+    const resize = new ResizeObserver(updateFocusable);
+    resize.observe(track);
     track.addEventListener('scroll', onScroll, { passive: true });
     return () => {
+      resize.disconnect();
       track.removeEventListener('scroll', onScroll);
       cancelAnimationFrame(frame);
     };

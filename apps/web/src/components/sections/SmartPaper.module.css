@@ -248,13 +248,13 @@
 }
 
 /*
- * Scroll scene: one pinned stage for 5.78 screens. The intro (white columns + heading) sits on
+ * Scroll scene: one pinned stage for 5.56 screens. The intro (white columns + heading) sits on
  * top; the steps are stacked with the first on top; the circle grows over everything at the end.
  * The section slides in over the pinned video stage of "Who it's for".
  */
 @media (min-width: 992px) and (prefers-reduced-motion: no-preference) {
   .smartPaper {
-    --scene: 5.78;
+    --scene: 5.56;
     position: relative;
     height: calc((var(--scene) + 1) * 100vh);
     margin-top: -100vh;
@@ -321,5 +321,8 @@
     margin: calc(-300 * var(--u)) 0 0 calc(-300 * var(--u));
     border-radius: 50%;
     background: var(--c-white);
+    /* Hidden until the scene grows it (also the state without JavaScript). */
+    visibility: hidden;
+    transform: scale(0);
   }
 }

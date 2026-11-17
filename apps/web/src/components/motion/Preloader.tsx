@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from '@/lib/animation/gsap';
 import { INTRO_DONE_EVENT, onLoadingProgress, trackLoading } from '@/lib/animation/loading';
 import { CINEMATIC } from '@/lib/animation/media';
 import styles from './Preloader.module.css';
@@ -36,6 +35,9 @@ export function Preloader() {
     root.classList.add('scroll-locked');
     const reportFonts = trackLoading('fonts');
     void document.fonts.ready.then(() => reportFonts(1));
+    // The hero scene loads on demand and reports into this task; register it now so the
+    // counter can't reach 100% before the sequence download has even started.
+    if (document.querySelector('[data-anim="sequence"]')) trackLoading('hero-sequence', 3);
 
     let loaded = 0;
     const unsubscribe = onLoadingProgress((progress) => (loaded = progress));
@@ -46,13 +48,16 @@ export function Preloader() {
       unsubscribe();
       overlay.dataset.state = 'done';
       root.classList.remove('scroll-locked');
-      gsap.fromTo(
-        ['header', '[data-anim="hero-heading"]'],
-        { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.7, delay: 0.1, ease: 'power1.out' },
-      );
       window.dispatchEvent(new Event(INTRO_DONE_EVENT));
-      ScrollTrigger.refresh();
+      // Same chunk the scenes use; already loaded by the time the intro ends.
+      void import('@/lib/animation/gsap').then(({ gsap, ScrollTrigger }) => {
+        gsap.fromTo(
+          ['header', '[data-anim="hero-heading"]'],
+          { opacity: 0 },
+          { opacity: 1, duration: 0.7, delay: 0.1, ease: 'power1.out' },
+        );
+        ScrollTrigger.refresh();
+      });
     };
 
     const start = performance.now();

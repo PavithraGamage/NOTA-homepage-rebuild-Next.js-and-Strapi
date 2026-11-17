@@ -41,10 +41,13 @@ export default async function HomePage() {
 
   return (
     <WaitlistProvider>
+      <a href="#top" className="skip-link">
+        Skip to content
+      </a>
       <Preloader />
       <AnchorNavigation />
       <Header chrome={chrome} />
-      <main id="top">
+      <main id="top" tabIndex={-1}>
         {homepage.sections.map((section) => (
           <SectionRenderer key={section.id} section={section} />
         ))}

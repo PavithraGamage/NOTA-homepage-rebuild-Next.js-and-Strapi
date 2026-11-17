@@ -39,8 +39,7 @@ export function audienceScene(section: HTMLElement) {
   });
 
   const intro = part(section, 'intro');
-  if (intro)
-    timeline.fromTo(intro, { autoAlpha: 0 }, { autoAlpha: 1, duration: INTRO_IN[1] - INTRO_IN[0] }, INTRO_IN[0]);
+  if (intro) timeline.fromTo(intro, { opacity: 0 }, { opacity: 1, duration: INTRO_IN[1] - INTRO_IN[0] }, INTRO_IN[0]);
 
   parts(section, 'card').forEach((card, index) => {
     timeline.fromTo(
@@ -62,7 +61,7 @@ export function audienceScene(section: HTMLElement) {
     tile,
     {
       scale: VIDEO.toScale,
-      autoAlpha: VIDEO.dim,
+      opacity: VIDEO.dim,
       xPercent: VIDEO.endXPercent,
       yPercent: VIDEO.endYPercent,
       duration: VIDEO.fade[1] - VIDEO.fade[0],

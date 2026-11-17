@@ -1,9 +1,8 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 
-// Registered once for every client component that animates; tree-shaking keeps the rest out.
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+// Registered once, in the chunk that is only loaded in cinematic mode.
+gsap.registerPlugin(ScrollTrigger);
 
 export { CINEMATIC } from './media';
-export { gsap, ScrollTrigger, useGSAP };
+export { gsap, ScrollTrigger };

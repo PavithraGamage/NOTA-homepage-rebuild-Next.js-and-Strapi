@@ -24,13 +24,13 @@ export function colorwaysScene(section: HTMLElement) {
     const image = part(slide, 'slide-image');
     const text = part(slide, 'slide-text');
     if (index === 0) return;
-    gsap.set([image, text], { autoAlpha: 0 });
+    gsap.set([image, text], { opacity: 0 });
     const change = CHANGES[index - 1];
     if (!change) return;
     const [start, end] = change;
-    timeline.to(image, { autoAlpha: 1, duration: end - start }, start);
-    timeline.to(part(slides[index - 1] ?? slide, 'slide-text'), { autoAlpha: 0, duration: end - start }, start);
-    timeline.to(text, { autoAlpha: 1, duration: end - start }, start);
+    timeline.to(image, { opacity: 1, duration: end - start }, start);
+    timeline.to(part(slides[index - 1] ?? slide, 'slide-text'), { opacity: 0, duration: end - start }, start);
+    timeline.to(text, { opacity: 1, duration: end - start }, start);
   });
 
   if (progress) {

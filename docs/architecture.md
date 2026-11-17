@@ -62,8 +62,10 @@ both the CSS and the JavaScript, so layout never waits for JS.
   next section starts higher with a negative margin. Where a section slides in under a stage that is
   turning the same colour (black bands, white circle), it stays invisible until it pins, so the
   hand-over is seamless.
-- **Scrubbing is GSAP.** `components/motion/Scene.tsx` wraps a server-rendered section and, inside
-  `useGSAP` + `gsap.matchMedia`, runs that section's scene (`lib/animation/scenes/*`). A scene's
+- **Scrubbing is GSAP.** `components/motion/Scene.tsx` wraps a server-rendered section and, the first time
+  cinematic mode applies, imports `lib/animation/run-scene.ts`, which runs that section's scene
+  (`lib/animation/scenes/*`) inside `gsap.matchMedia`. Phones and reduced-motion visitors never download
+  GSAP or the scenes. A scene's
   timeline is measured in viewport heights of scroll (1 = 100vh), and its length is read from the same
   `--scene` CSS variable that sizes the wrapper, so CSS and JS cannot drift apart. Positions and eases
   are named constants measured on the reference (docs/reference-audit.md §1.3). Leaving cinematic
@@ -78,6 +80,19 @@ both the CSS and the JavaScript, so layout never waits for JS.
   from the section under it (`data-header-theme`, found by hit-testing so overlapping stages work).
 - **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
   (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
+
+## Security headers
+
+- **Content-Security-Policy** (`src/proxy.ts`): a fresh nonce per request; Next.js puts it on its own
+  scripts, and `'strict-dynamic'` lets those load the on-demand chunks, so no other script can run.
+  Images, video and the hero sequence may come from Strapi's public origin only; `object-src 'none'`,
+  `base-uri` and `form-action` are `'self'`. Styles allow inline because React renders a few `style`
+  attributes, which nonces cannot cover. Pages that use nonces must render per request; the homepage
+  already does, and the 404 page opts in with `connection()`.
+- **Static headers** (`next.config.ts`): `X-Robots-Tag: noindex`, HSTS, `nosniff`, `Referrer-Policy`,
+  `X-Frame-Options`, `Permissions-Policy`.
+- **Uploads** (`apps/cms/src/middlewares/upload-headers.ts`): a sandboxing CSP on every file under
+  `/uploads`, so an uploaded SVG cannot run script on the CMS domain.
 
 ## Waitlist form (browser → Server Action → Strapi)
 
