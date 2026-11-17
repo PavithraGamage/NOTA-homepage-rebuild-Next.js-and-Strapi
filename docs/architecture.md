@@ -117,10 +117,13 @@ node -e "process.stdout.write(require('crypto').randomBytes(32).toString('hex'))
 railway config plan                          # review the diff
 railway config apply --yes                   # add --confirm-destructive only for an approved deletion
 
-# 3b. Connect autodeploy. Services created by IaC got their repo but no deployment trigger,
-#     so pushes to main did nothing until each service was connected explicitly:
-railway service source connect --repo PavithraGamage/senior-web-developer-surge --branch main --service web
-railway service source connect --repo PavithraGamage/senior-web-developer-surge --branch main --service cms
+# 3b. Autodeploy. Railway only hears about pushes if its GitHub App can see the repo:
+#     install https://github.com/apps/railway-app for this repository first. Then create a
+#     trigger per service; checkSuites = "Wait for CI", so main deploys only after Actions passes.
+railway api 'mutation($i: DeploymentTriggerCreateInput!){ deploymentTriggerCreate(input:$i){ id } }' \
+  --variables '{"i":{"provider":"github","repository":"<owner>/<repo>","branch":"main","checkSuites":true,
+    "rootDirectory":"apps/cms","projectId":"<project>","environmentId":"<environment>","serviceId":"<cms>"}}'
+#     (repeat for web with rootDirectory "apps/web")
 railway config plan                          # must report "already up to date" (no drift)
 
 # 4. Public domains BEFORE the first build: both apps read the other's domain at build time
@@ -138,9 +141,22 @@ node -e "process.stdout.write(require('crypto').randomBytes(32).toString('base64
   | railway variable set ENCRYPTION_KEY --stdin --service cms
 
 # 6. After cms is healthy: create the first admin at /admin, then Settings → API Tokens →
-#    Read-only, unlimited. Copy it and pipe it in (never paste it anywhere else):
+#    Custom, unlimited, permissions: find on Global, Homepage, Product (it cannot read waitlist
+#    emails). Delete Strapi's auto-created "Full Access" and "Read Only" tokens. Pipe the key in:
 pbpaste | tr -d '\n' | railway variable set STRAPI_READ_TOKEN --stdin --service web --skip-deploys
 railway redeploy --service web --from-source --yes
+```
+
+### Seeding production
+
+The seed runs inside the live `cms` container (it needs the volume and the private database):
+
+```bash
+ssh-keygen -t ed25519 -N "" -f ~/.ssh/railway_ed25519        # a key used only for Railway
+railway ssh keys add --key ~/.ssh/railway_ed25519.pub
+railway ssh config --service cms --dry-run                   # shows the user@ssh.railway.com target
+ssh -i ~/.ssh/railway_ed25519 -o StrictHostKeyChecking=accept-new <user>@ssh.railway.com \
+  'cd /app && node scripts/seed.js --no-compile'             # add --overwrite to replace content
 ```
 
 **Verify:** `curl -I` the site shows `X-Robots-Tag: noindex`; the Postgres service has no domain, TCP proxy or
@@ -149,9 +165,11 @@ after `railway redeploy --service cms --yes`.
 
 **Lessons from the first deploy:** a build that runs before the other service's domain exists sees `https://` for
 `${{cms.RAILWAY_PUBLIC_DOMAIN}}`, so generate domains first (step 4). A failed build has no image, so retry it with
-`--from-source`. IaC-created services needed `railway service source connect` before pushes deployed them (step 3b);
-after that, a commit touching only `apps/web/**` deployed `web` and marked `cms` as SKIPPED, confirming the watch
-paths. Railway's Postgres template runs `postgres-ssl:18`.
+`--from-source`. Builds worked without the Railway GitHub App (the repo is public), but pushes deployed nothing:
+Railway refused to create triggers ("no one in the project has access") until the app was installed for the repo
+(step 3b). A deploy of a commit touching only `apps/web/**` marked `cms` as SKIPPED, confirming the watch paths.
+Strapi 5 also grants the Public role self-registration by default; the CMS now removes every Public permission on
+boot. Railway's Postgres template runs `postgres-ssl:18`.
 
 ## Local development
 

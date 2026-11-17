@@ -27,7 +27,8 @@ export default defineRailway((ctx, project) => {
   const uploads = volume('cms-uploads', { region: 'us-west2', sizeMB: 5000 });
 
   const cms = service('cms', {
-    source: github(REPO, { branch: 'main', rootDirectory: 'apps/cms' }),
+    // checkSuites = Railway's "Wait for CI": a push deploys only after GitHub Actions passes.
+    source: github(REPO, { branch: 'main', rootDirectory: 'apps/cms', checkSuites: true }),
     build: {
       builder: 'RAILPACK',
       buildCommand: 'npm run build',
@@ -64,7 +65,7 @@ export default defineRailway((ctx, project) => {
   });
 
   const web = service('web', {
-    source: github(REPO, { branch: 'main', rootDirectory: 'apps/web' }),
+    source: github(REPO, { branch: 'main', rootDirectory: 'apps/web', checkSuites: true }),
     build: {
       builder: 'RAILPACK',
       buildCommand: 'npm run build',
