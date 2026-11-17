@@ -12,6 +12,12 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40,
+      "default": "Homepage"
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

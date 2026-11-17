@@ -93,6 +93,7 @@ export const globalSeed = (media: MediaIds, productDocumentId: string) => ({
 });
 
 export const homepageSeed = (media: MediaIds, productDocumentId: string) => ({
+  title: 'Homepage',
   seo: { ...SEO, ogImage: media['nota-share-image'] },
   sections: [
     {

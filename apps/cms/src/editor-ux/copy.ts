@@ -44,7 +44,9 @@ export const EDITOR_COPY: Record<string, ViewCopy> = {
   },
   'api::homepage.homepage': {
     kind: 'content-type',
+    mainField: 'title',
     fields: {
+      title: f('Title', 'Name of this page in the admin. Not shown on the site.', 'Homepage'),
       seo: f('SEO', 'Title, description and share image for the homepage.'),
       sections: f('Sections', 'The homepage, top to bottom. Drag to reorder; each section keeps its own layout and animation.'),
     },
