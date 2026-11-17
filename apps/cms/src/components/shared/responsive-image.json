@@ -1,0 +1,56 @@
+{
+  "collectionName": "components_shared_responsive_images",
+  "info": {
+    "displayName": "Responsive image",
+    "icon": "picture",
+    "description": "One image with optional crops for smaller screens. Each crop falls back to the next larger one."
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "max1439": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "max991": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "max767": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "max479": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "alt": {
+      "type": "string",
+      "required": true,
+      "maxLength": 160
+    }
+  }
+}

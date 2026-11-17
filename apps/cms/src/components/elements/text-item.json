@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_elements_text_items",
+  "info": {
+    "displayName": "Text item",
+    "icon": "bulletList",
+    "description": "One short line in a list."
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "maxLength": 80
+    }
+  }
+}

@@ -28,6 +28,8 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewar
   },
   'strapi::session',
   'strapi::favicon',
+  // Wraps the static file server so it can harden headers on /uploads/* responses.
+  'global::upload-headers',
   'strapi::public',
 ];
 

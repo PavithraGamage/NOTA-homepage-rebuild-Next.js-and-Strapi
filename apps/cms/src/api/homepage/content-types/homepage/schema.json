@@ -1,0 +1,42 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": "The homepage: SEO and the sections in page order."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40,
+      "default": "Homepage"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "required": true
+    },
+    "sections": {
+      "type": "dynamiczone",
+      "required": true,
+      "min": 1,
+      "components": [
+        "sections.hero",
+        "sections.specs",
+        "sections.audience",
+        "sections.smart-paper",
+        "sections.inside-box",
+        "sections.details",
+        "sections.colorways"
+      ]
+    }
+  }
+}

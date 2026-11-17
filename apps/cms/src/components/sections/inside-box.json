@@ -1,0 +1,59 @@
+{
+  "collectionName": "components_sections_inside_boxs",
+  "info": {
+    "displayName": "Inside the box",
+    "icon": "archive",
+    "description": "What ships in the box."
+  },
+  "options": {},
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "isHidden": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "headingMuted": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "kitTitle": {
+      "type": "string",
+      "required": true,
+      "maxLength": 48
+    },
+    "kitBody": {
+      "type": "text",
+      "required": true,
+      "maxLength": 200
+    },
+    "kitImage": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    },
+    "statement": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.product-item",
+      "min": 1,
+      "max": 2
+    }
+  }
+}

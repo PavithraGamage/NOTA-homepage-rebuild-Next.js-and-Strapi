@@ -9,10 +9,13 @@
     "dev": "strapi develop",
     "start": "strapi start",
     "strapi": "strapi",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "@strapi/database": "5.62.0",
+    "@strapi/plugin-color-picker": "5.62.0",
     "@strapi/plugin-users-permissions": "5.62.0",
     "@strapi/strapi": "5.62.0",
     "pg": "8.20.0",
@@ -25,7 +28,8 @@
     "@types/node": "^24.19.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.1.0"
   },
   "engines": {
     "node": "24.x",

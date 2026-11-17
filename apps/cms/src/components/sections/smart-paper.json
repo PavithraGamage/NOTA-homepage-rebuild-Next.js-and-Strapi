@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_sections_smart_papers",
+  "info": {
+    "displayName": "Smart paper",
+    "icon": "book",
+    "description": "The smart-paper story, told in steps."
+  },
+  "options": {},
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "isHidden": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "headingMuted": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "heading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    },
+    "steps": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.story-step",
+      "min": 2,
+      "max": 6
+    }
+  }
+}

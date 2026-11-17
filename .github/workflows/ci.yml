@@ -37,7 +37,7 @@ jobs:
       - run: npm run build
 
   cms:
-    name: cms (types, build)
+    name: cms (types, tests, build)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -51,6 +51,7 @@ jobs:
           cache-dependency-path: apps/cms/package-lock.json
       - run: npm ci
       - run: npm run typecheck
+      - run: npm test
       - name: Build admin panel
         # `strapi build` loads the runtime config, which validates these at load time.
         # Placeholders only; nothing connects to a database during the build.

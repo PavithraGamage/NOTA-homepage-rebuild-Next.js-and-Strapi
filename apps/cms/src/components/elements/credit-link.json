@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_elements_credit_links",
+  "info": {
+    "displayName": "Credit link",
+    "icon": "cursor",
+    "description": "A footer credit. Either links out or opens the team popover."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true,
+      "maxLength": 40
+    },
+    "url": {
+      "type": "string",
+      "maxLength": 200,
+      "regex": "^https?://.+"
+    },
+    "opensTeamPopover": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    }
+  }
+}

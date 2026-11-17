@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_elements_detail_tiles",
+  "info": {
+    "displayName": "Detail tile",
+    "icon": "grid",
+    "description": "One tile of the details grid: an image, a looping video, or both. Tiles keep their position, so order matters."
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": false
+    },
+    "video": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_layout_mobile_menus",
+  "info": {
+    "displayName": "Mobile menu",
+    "icon": "apps",
+    "description": "Content of the full-screen menu on tablets and phones."
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.responsive-image",
+      "required": true
+    }
+  }
+}

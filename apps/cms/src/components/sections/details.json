@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_sections_detailss",
+  "info": {
+    "displayName": "Details",
+    "icon": "grid",
+    "description": "A six-tile grid of product close-ups."
+  },
+  "options": {},
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "isHidden": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "tiles": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.detail-tile",
+      "min": 6,
+      "max": 6
+    }
+  }
+}

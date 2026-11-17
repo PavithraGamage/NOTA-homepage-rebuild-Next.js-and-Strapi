@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_shared_videos",
+  "info": {
+    "displayName": "Video",
+    "icon": "play",
+    "description": "A muted video. An optional poster shows before it plays and for reduced motion."
+  },
+  "options": {},
+  "attributes": {
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 160
+    }
+  }
+}

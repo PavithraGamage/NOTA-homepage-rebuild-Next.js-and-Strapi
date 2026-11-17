@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_elements_paragraphs",
+  "info": {
+    "displayName": "Paragraph",
+    "icon": "feather",
+    "description": "One plain-text paragraph."
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "text",
+      "required": true,
+      "maxLength": 400
+    }
+  }
+}

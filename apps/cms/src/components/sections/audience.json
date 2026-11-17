@@ -1,0 +1,51 @@
+{
+  "collectionName": "components_sections_audiences",
+  "info": {
+    "displayName": "Who it’s for",
+    "icon": "user",
+    "description": "Statement, introduction, audience cards and a video."
+  },
+  "options": {},
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "maxLength": 40,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "isHidden": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "statement": {
+      "type": "text",
+      "required": true,
+      "maxLength": 300
+    },
+    "eyebrow": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "intro": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.paragraph",
+      "min": 1,
+      "max": 3
+    },
+    "cards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.audience-card",
+      "min": 1,
+      "max": 4
+    },
+    "video": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.video",
+      "required": true
+    }
+  }
+}

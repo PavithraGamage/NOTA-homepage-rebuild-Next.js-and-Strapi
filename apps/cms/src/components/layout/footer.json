@@ -1,0 +1,53 @@
+{
+  "collectionName": "components_layout_footers",
+  "info": {
+    "displayName": "Footer",
+    "icon": "layout",
+    "description": "Footer copy, credits and the team popover."
+  },
+  "options": {},
+  "attributes": {
+    "tagline": {
+      "type": "text",
+      "required": true,
+      "maxLength": 160
+    },
+    "navHeading": {
+      "type": "string",
+      "required": true,
+      "maxLength": 24
+    },
+    "yearLabel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 12
+    },
+    "yearValue": {
+      "type": "string",
+      "required": true,
+      "maxLength": 8
+    },
+    "copyright": {
+      "type": "string",
+      "required": true,
+      "maxLength": 48
+    },
+    "credits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.credit-link",
+      "max": 6
+    },
+    "teamGroups": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.person-group",
+      "max": 4
+    },
+    "popoverCloseLabel": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32
+    }
+  }
+}

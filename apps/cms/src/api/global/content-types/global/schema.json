@@ -17,6 +17,73 @@
       "required": true,
       "maxLength": 40,
       "default": "NŌTA"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "brandMark": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "favicon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "navigation": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.nav-link",
+      "min": 1,
+      "max": 6
+    },
+    "orderCta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "elements.order-cta",
+      "required": true
+    },
+    "mobileMenu": {
+      "type": "component",
+      "repeatable": false,
+      "component": "layout.mobile-menu",
+      "required": true
+    },
+    "preloader": {
+      "type": "component",
+      "repeatable": false,
+      "component": "layout.preloader",
+      "required": true
+    },
+    "waitlistModal": {
+      "type": "component",
+      "repeatable": false,
+      "component": "forms.waitlist-modal",
+      "required": true
+    },
+    "footer": {
+      "type": "component",
+      "repeatable": false,
+      "component": "layout.footer",
+      "required": true
+    },
+    "defaultSeo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo",
+      "required": true
     }
   }
 }

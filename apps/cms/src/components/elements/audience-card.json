@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_elements_audience_cards",
+  "info": {
+    "displayName": "Audience card",
+    "icon": "user",
+    "description": "Who the product is for: a title and a short description."
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 48
+    },
+    "body": {
+      "type": "text",
+      "required": true,
+      "maxLength": 400
+    }
+  }
+}

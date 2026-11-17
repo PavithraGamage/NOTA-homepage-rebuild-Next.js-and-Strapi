@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "products",
+  "info": {
+    "singularName": "product",
+    "pluralName": "products",
+    "displayName": "Product",
+    "description": "A product with its price and colours. Linked from the order button and the colorways section."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "maxLength": 32,
+      "unique": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "currency": {
+      "type": "enumeration",
+      "enum": [
+        "USD",
+        "EUR",
+        "GBP"
+      ],
+      "default": "USD",
+      "required": true
+    },
+    "colorways": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.colorway",
+      "max": 8
+    }
+  }
+}

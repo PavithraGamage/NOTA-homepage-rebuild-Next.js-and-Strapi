@@ -2,7 +2,8 @@
 # on its private network; the apps themselves run with `npm run dev` / `npm run develop`.
 services:
   postgres:
-    image: postgres:17-alpine
+    # Same major version as Railway's Postgres template (postgres-ssl:18).
+    image: postgres:18-alpine
     container_name: nota-postgres
     restart: unless-stopped
     environment:
@@ -12,7 +13,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - nota-pgdata:/var/lib/postgresql/data
+      # Postgres 18 images keep data in a versioned subfolder of /var/lib/postgresql.
+      - nota-pgdata-18:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U strapi -d nota_cms"]
       interval: 5s
@@ -20,4 +22,4 @@ services:
       retries: 10
 
 volumes:
-  nota-pgdata:
+  nota-pgdata-18:
