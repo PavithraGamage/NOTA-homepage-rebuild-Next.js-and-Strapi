@@ -2,7 +2,7 @@
   "name": "nota-cms",
   "version": "0.1.0",
   "private": true,
-  "description": "Strapi 5 CMS for the NŌTA homepage rebuild",
+  "description": "Strapi 5 CMS for the N\u014cTA homepage rebuild",
   "scripts": {
     "build": "strapi build",
     "develop": "strapi develop",
@@ -11,7 +11,8 @@
     "strapi": "strapi",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "create-token": "node scripts/create-token.js"
   },
   "dependencies": {
     "@strapi/database": "5.62.0",
