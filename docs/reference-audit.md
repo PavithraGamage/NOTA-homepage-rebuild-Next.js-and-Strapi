@@ -99,6 +99,22 @@ Timeline at 1440×900 (1vh = 900px of scroll):
 Fine easing curves per scene will be measured in Phase 4 using the same capture tooling at a finer scroll
 step (100px). The ranges above are the contract for Phase 3 layout.
 
+**Phase 4 measurements** (1440×900, 100px steps, element geometry and opacity per step). Values below are in
+viewport heights; the code keeps them as named constants next to each scene.
+
+| Scene | Measured behaviour |
+|---|---|
+| Hero | 75-frame sequence over 0 → 1.7; the header slides away at the end of it. |
+| Column wipe | 6 columns, each rises over 0.39 (power2.inOut), starting 1.706 and 0.08 apart. Faint dividers fade as the heading arrives. |
+| Specs | Heading appears centred at 2.5 and moves to its place over 2.72 → 3.5 (sine.inOut). Pen rises 2.77 → 3.77 (sine.out). Cards peek in by 77px at 3.05, then rise one after another (start 3.5 / 3.75 / 4.05) and land together at 4.55. |
+| Silhouette | Not one shape: 4 black bands (1:2:2:2 of the height) grow from the centre, bottom first, 4.82 → 5.53. |
+| Who it's for | Statement held at the top while words turn #666 → white (5.44 → 6.28); intro fades in; cards slide in from 480px right (sine.out, 0.11 apart). Video tile pins at 7.22, grows from 0.51 at the bottom-right to 1360×660 by 8.22 while playing once in real time, then shrinks to 0.68 and dims to 20% (8.33 → 9.89). |
+| Smart paper | Panel pins at 10.0; heading fades and column dividers appear (10.17 → 10.44); columns drop (from 10.61, 0.053 apart). Steps change at 11.89, 12.72, 13.56: the old image shrinks to 0.6 and fades, the new one zooms 1.4 → 1 (power2.out), copy switches. Last step fades to black; a white dot (600px circle at 0.01) grows to cover the screen, 14.94 → 15.72 (sine.in). |
+| Inside the box | Heading fades in on white and holds 0.44; normal flow after. Cards revealed by white stripes 33px apart closing as they scroll in; statement words #ddd → black. Statement sits ~0.4 screens below the kit and above the products. |
+| Details | Each tile's picture fades in quickly and settles 1.3 → 1 (sine.inOut) between 85% and 15% of the viewport; the video tile only fades. |
+| Colorways | Pins for 2.5; cross-fades at +0.26, +0.93, +1.43, +1.93 (≈0.2 each), then scrolls away uncovering the footer. |
+
+
 ### 1.4 Typography
 
 Fonts: **Instrument Serif** 400 (display) and **Inter** 400/500/600 (UI and body), both from Google
