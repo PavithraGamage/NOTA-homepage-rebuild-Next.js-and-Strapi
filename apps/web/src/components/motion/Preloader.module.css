@@ -3,11 +3,9 @@
   display: none;
 }
 
+/* Type comes from .t-display: the reference sets the counter in the hero heading's style
+   (96px from 992 up). */
 .counter {
-  font-family: var(--font-display);
-  font-size: calc(32 * var(--u));
-  line-height: 1;
-  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 

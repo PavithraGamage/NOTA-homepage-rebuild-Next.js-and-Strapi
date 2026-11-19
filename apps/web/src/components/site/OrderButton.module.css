@@ -6,7 +6,7 @@
   color: var(--c-white);
   border-radius: calc(4 * var(--u));
   transition:
-    background-color 0.3s ease,
+    background-color 0.2s ease,
     opacity 0.3s ease;
 }
 
@@ -41,8 +41,9 @@
   }
 }
 
+/* Measured on the reference: black to the accent red in 0.2s. */
 .solid:hover {
-  background: #1f1f1f;
+  background: var(--c-accent);
 }
 
 .button:hover .product {

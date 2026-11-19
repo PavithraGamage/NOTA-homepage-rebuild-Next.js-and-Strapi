@@ -20,7 +20,8 @@
   --c-grey-999: #999;
   --c-grey-ddd: #ddd;
   --c-panel: #f2f2f2;
-  --c-error: #f20;
+  --c-accent: #f20;
+  --c-error: var(--c-accent);
   --c-white-55: rgba(255, 255, 255, 0.55);
   --c-white-50: rgba(255, 255, 255, 0.5);
   --c-white-40: rgba(255, 255, 255, 0.4);

@@ -3,20 +3,24 @@
 import { useEffect, useRef } from 'react';
 import { INTRO_DONE_EVENT, onLoadingProgress, trackLoading } from '@/lib/animation/loading';
 import { CINEMATIC } from '@/lib/animation/media';
+import { scrambleIn } from '@/lib/animation/scramble';
 import styles from './Preloader.module.css';
 
 /** Measured on the reference: 0→100% in about 1.2s (ease-in-out), then a 0.8s fade. */
 const COUNT_MS = 1200;
 const HOLD_MS = 300;
 const TIMEOUT_MS = 6000;
+/** The heading starts its reveal once the overlay is mostly gone, so the flicker is seen. */
+const REVEAL_DELAY_MS = 250;
 const easeInOut = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
 
 /**
  * Large-screen intro: a counter over the stage gradient that follows real loading progress
  * (fonts and the hero sequence) but never runs faster than the reference's 1.2s count, and
- * gives up after 6s so it can never hang. Then it fades, the header and hero heading fade in,
- * and the header scrambles its labels once. CSS hides it on other screens and also fades it
- * out after 6s if this script never runs.
+ * gives up after 6s so it can never hang. Then it fades, the header fades in and scrambles its
+ * labels once, and the hero heading reveals letter by letter through random letters, as on the
+ * reference. CSS hides it on other screens and also fades it out after 6s if this script never
+ * runs; the heading then simply stays as it is.
  */
 export function Preloader() {
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -42,6 +46,7 @@ export function Preloader() {
     let loaded = 0;
     const unsubscribe = onLoadingProgress((progress) => (loaded = progress));
     let finished = false;
+    let stopReveal: (() => void) | undefined;
 
     const finish = () => {
       finished = true;
@@ -49,13 +54,11 @@ export function Preloader() {
       overlay.dataset.state = 'done';
       root.classList.remove('scroll-locked');
       window.dispatchEvent(new Event(INTRO_DONE_EVENT));
+      const heading = document.querySelector<HTMLElement>('[data-anim="hero-heading"]');
+      if (heading) stopReveal = scrambleIn(heading, Array.from(heading.querySelectorAll('.line')), REVEAL_DELAY_MS);
       // Same chunk the scenes use; already loaded by the time the intro ends.
       void import('@/lib/animation/gsap').then(({ gsap, ScrollTrigger }) => {
-        gsap.fromTo(
-          ['header', '[data-anim="hero-heading"]'],
-          { opacity: 0 },
-          { opacity: 1, duration: 0.7, delay: 0.1, ease: 'power1.out' },
-        );
+        gsap.fromTo('header', { opacity: 0 }, { opacity: 1, duration: 0.7, delay: 0.1, ease: 'power1.out' });
         ScrollTrigger.refresh();
       });
     };
@@ -74,13 +77,14 @@ export function Preloader() {
     return () => {
       cancelAnimationFrame(frame);
       unsubscribe();
+      stopReveal?.();
       if (!finished) root.classList.remove('scroll-locked');
     };
   }, []);
 
   return (
     <div ref={overlayRef} className={styles.preloader} aria-hidden="true">
-      <span ref={counterRef} className={styles.counter}>
+      <span ref={counterRef} className={`${styles.counter} t-display`}>
         0%
       </span>
     </div>
