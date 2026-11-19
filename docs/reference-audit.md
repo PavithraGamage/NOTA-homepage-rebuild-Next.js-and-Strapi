@@ -491,7 +491,8 @@ theme per section, and the reference's design-width scaling numbers.
 **For Surge (email Kavinda; the candidate sends it):**
 1. ~~May we reuse the reference's **videos** and **Lottie** (image sequence), or only still images?~~
    **Yes**, cleared on 17 Nov; both are reused.
-2. Should reviewer accounts be **Super Admin** or **Editor**? (The candidate creates the accounts.)
+2. ~~Should reviewer accounts be **Super Admin** or **Editor**?~~ **Super Admin**, decided by the candidate
+   (19 Nov), so reviewers can inspect the schema and settings. The candidate created the three accounts.
 
 ---
 

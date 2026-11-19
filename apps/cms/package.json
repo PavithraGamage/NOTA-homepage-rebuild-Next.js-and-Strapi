@@ -15,10 +15,10 @@
     "create-token": "node scripts/create-token.js"
   },
   "dependencies": {
-    "@strapi/database": "5.62.0",
-    "@strapi/plugin-color-picker": "5.62.0",
-    "@strapi/plugin-users-permissions": "5.62.0",
-    "@strapi/strapi": "5.62.0",
+    "@strapi/database": "5.63.0",
+    "@strapi/plugin-color-picker": "5.63.0",
+    "@strapi/plugin-users-permissions": "5.63.0",
+    "@strapi/strapi": "5.63.0",
     "pg": "8.20.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
