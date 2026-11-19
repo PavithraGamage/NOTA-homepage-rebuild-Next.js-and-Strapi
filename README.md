@@ -169,7 +169,8 @@ Every type, component and validation rule is in [docs/content-model.md](docs/con
 | `cms-uploads` volume | Uploads at `/app/public/uploads`; survives redeploys | n/a |
 
 - **Config as code:** `.railway/railway.ts` (Railway Infrastructure as Code) declares the services, Postgres, the
-  volume, root directories, builds, watch paths, start commands, healthchecks, restart policy and every variable.
+  volume, root directories, builds, watch paths, start commands, healthchecks, restart policy, the edge cache and
+  every variable.
   Railway's `railway.toml` is deprecated for new services.
 - **Variables:** reference variables connect the services, for example
   `STRAPI_INTERNAL_URL = http://${{cms.RAILWAY_PRIVATE_DOMAIN}}:${{cms.PORT}}` and
@@ -177,6 +178,11 @@ Every type, component and validation rule is in [docs/content-model.md](docs/con
   were set through stdin and are never committed. Tokens are server-only, and `web` validates its env at start.
 - **Networking:** `web → cms` reads and the `cms → web` webhook both use `*.railway.internal`; only `web` and `cms`
   have public domains.
+- **Region:** all three run in Singapore (`asia-southeast1`), close to the reviewers. They moved from US West on
+  20 Nov, the database last: while Postgres was still in the US, every Strapi query crossed the Pacific and opening
+  the homepage in the admin took 18 s instead of 0.2 s. The database must always share the CMS's region.
+- **Edge cache:** Railway's CDN is on for `web` and `cms`. It follows `Cache-Control`, so it keeps only hashed
+  static files and uploads; pages, the admin and the API always reach the services.
 - **Deploys:** GitHub autodeploy from `main` after CI passes, one root directory per service, and watch paths, so
   a web-only commit never redeploys the CMS. Healthchecks gate the switch to a new deployment.
 
@@ -223,8 +229,7 @@ The full variable table, networking notes and a one-time setup runbook are in
   against approved baselines.
 - **End-to-end tests in CI**, with a Postgres service and the seed; today they run locally.
 - **Strapi Preview with Next.js Draft Mode**, so editors can see a draft on the real page before publishing.
-- **Object storage and a CDN** for media, so `cms` can run more than one replica, and media is served from the edge.
-- **Hosting closer to visitors:** most of the simulated mobile LCP is the round trip to Railway's US region.
+- **Object storage** for media, so `cms` can run more than one replica (the uploads volume pins it to one).
 - **Calibrate scroll timing at more aspect ratios**: it was tuned at 1440×900 and checked at others.
 - **Real-device testing:** iOS Safari and Android Chrome on hardware, not only emulation.
 - **Lighthouse CI budgets**, so performance can't regress unnoticed.
@@ -275,7 +280,9 @@ Commits carry no AI trailer by my choice; AI use is disclosed here and in the lo
   - Lighthouse mobile is ~93–98 (CLS 0, TBT ~0).
   - Phones never download GSAP, the scenes or the 1.8 MB hero sequence. Videos load only within a screen of view,
     only Latin fonts are preloaded, and the hero image has high fetch priority.
-  - Simulated slow-4G LCP is about 2.5–3 s, mostly the round trip to Railway's US region; observed LCP is ~1.2 s.
+  - Simulated slow-4G LCP was about 2.5–3 s, mostly the round trip to Railway's US region; observed LCP was
+    ~1.2 s. These figures and the Lighthouse scores above predate the move to Singapore, which is nearer the
+    reviewers, and weren't re-measured.
   - On desktop the wheel glides with the reference's measured easing. A scripted scroll through the whole page
     holds 60 fps with no long frames, as the reference does.
 - **Browsers:** the full scroll story was checked in Chrome, Firefox and WebKit (Safari's engine), and the phone
