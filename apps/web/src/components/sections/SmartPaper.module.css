@@ -286,12 +286,16 @@
     background: var(--c-black);
   }
 
+  /* The intro layer stays over the steps for the whole scene, so only its white columns count
+     as being on top: the header takes its colour from what is under it (hit-testing), and turns
+     white once the columns have dropped away from the top, as on the reference. */
   .intro {
     position: absolute;
     inset: 0;
     z-index: 2;
     min-height: 0;
     background: none;
+    pointer-events: none;
   }
 
   .columns {
@@ -305,6 +309,7 @@
     flex: 1;
     background: var(--c-white);
     box-shadow: inset -1px 0 rgba(0, 0, 0, calc(var(--divider) * 0.06));
+    pointer-events: auto;
   }
 
   .heading {
