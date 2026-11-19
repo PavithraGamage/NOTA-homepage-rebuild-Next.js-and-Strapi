@@ -353,21 +353,23 @@ main:focus {
   border: 0;
 }
 
-/* CMS line breaks: "always" keeps every line; "desktop" lets lines flow together below 992px. */
+/* CMS line breaks: "always" keeps every line; "desktop" lets lines flow together below 992px;
+   "first" keeps only the first break below 992px (the story steps, as on the reference). */
 .line[data-breaks='always'] {
+  display: block;
+}
+.line[data-breaks='first'] {
+  display: inline;
+}
+.line[data-breaks='first']:first-child {
   display: block;
 }
 .line[data-breaks='desktop'] {
   display: inline;
 }
-.line[data-breaks='desktop'] + .line::before {
-  content: ' ';
-}
 @media (min-width: 992px) {
-  .line[data-breaks='desktop'] {
+  .line[data-breaks='desktop'],
+  .line[data-breaks='first'] {
     display: block;
-  }
-  .line[data-breaks='desktop'] + .line::before {
-    content: none;
   }
 }
