@@ -190,10 +190,16 @@ Each section lists: content fields → desktop behaviour → static (≤991) lay
 
 ### 3.0 Preloader (≥992 only)
 - **Content:** none (the counter is functional UI).
-- **Desktop:** full-screen stage gradient, centred counter "0%…100%" (Instrument Serif, about 32px, white).
+- **Desktop:** full-screen stage gradient, centred counter "0%…100%" in the hero heading's type style (Instrument
+  Serif 96px from 992 up, -0.04em, white; re-measured on 19 Nov, the first "about 32px" was read off scaled screenshots).
   Measured: counts **0→100 in ~1.2s with an ease-in-out curve**, holds at 100% for ~1.9s (assets loading),
   then the overlay **fades out over ~0.8s**. The header and hero heading **fade in over ~0.7s**, starting about
   2.0s after 100%; during this fade the nav labels **scramble once** and resolve to their text. Pen frame 0 is already in place underneath.
+- **Hero heading reveal (re-measured 19 Nov, frame by frame at 1440×900):** not a plain fade. Each line resolves
+  letter by letter: a random lowercase letter flickers for ~70ms at each position, then fades out over 250ms
+  (ease-out) while the real letter fades in. The wave crosses a line in ~0.6s whatever its length, the second
+  line starts 50ms after the first, and the whole reveal takes ~0.95s. It runs about 1s after 100% on a timer,
+  so on a slow load it can play under the overlay. ≥992 only; on phones the heading is plain text.
 - **≤991:** no preloader.
 - **Ours:** real progress (fonts, Lottie, first video metadata), minimum 1.2s, fade 0.8s, hard timeout 6s.
 
@@ -323,12 +329,12 @@ Each section lists: content fields → desktop behaviour → static (≤991) lay
 
 | # | Interaction | Where | Trigger | Behaviour | Confidence |
 |---|---|---|---|---|---|
-| 1 | Preloader counter + reveal | ≥992 | load | §3.0 timings | High (measured) |
+| 1 | Preloader counter + reveal | ≥992 | load | §3.0 timings, including the letter-by-letter hero heading | High (measured) |
 | 2 | Header hide/show | all | scroll direction | hide past hero, show on any scroll-up, translateY | High |
 | 3 | Header theme switch | all | section under header | white ↔ black text | High |
 | 4 | Nav hover | ≥992 | hover | 1px underline fades in/out | High |
 | 5 | Nav text scramble | ≥992 | page load | Labels show random letters that resolve to the real label once, during the header reveal (~0.7s). Not on hover. | Medium (seen by eye, §9) |
-| 6 | Order CTA hover | ≥992 | hover | subtle (to match in Phase 4) | Medium |
+| 6 | Order CTA hover | ≥992 | hover | background black → #f20 (the error red) over 0.2s, `ease` (measured 19 Nov) | High |
 | 7 | Waitlist modal | all | CTA | open/close, Esc, overlay click, 4 states | High |
 | 8 | Hero sequence scrub | ≥992 | scroll | 76-frame Lottie tied to the 1.7vh pin | High |
 | 9 | Column wipe ↑ (×2) and ↓ (×1) | ≥992 | scroll | §3.2, §3.6, §3.7 | High |
