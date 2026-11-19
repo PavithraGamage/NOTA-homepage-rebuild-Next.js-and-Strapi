@@ -23,8 +23,9 @@ export default defineRailway((ctx, project) => {
   // Strapi's local upload provider writes to /app/public/uploads. Mounting a volume there
   // makes uploaded media survive redeploys (R7). A volume pins the service to one replica.
   // Region and size match what Railway provisioned, so a plan never proposes shrinking it
-  // (decreasing sizeMB is destructive). Same region as the services.
-  const uploads = volume('cms-uploads', { region: 'us-west2', sizeMB: 5000 });
+  // (decreasing sizeMB is destructive). Same region as the services and Postgres: Singapore,
+  // since 20 Nov (it was US West; Strapi queries must not cross regions).
+  const uploads = volume('cms-uploads', { region: 'asia-southeast1-eqsg3a', sizeMB: 5000 });
 
   const cms = service('cms', {
     // checkSuites = Railway's "Wait for CI": a push deploys only after GitHub Actions passes.
@@ -43,6 +44,9 @@ export default defineRailway((ctx, project) => {
       restartPolicyMaxRetries: 5,
     },
     volumeMounts: { '/app/public/uploads': uploads },
+    // Railway's edge cache, with its defaults: it follows Cache-Control, so only uploads
+    // (public, immutable) are cached; the admin and API responses pass through.
+    cdn: { enabled: true },
     env: {
       NODE_ENV: 'production',
       // "::" accepts IPv6 (private network) and IPv4. PORT is explicit so `web` can reference it.
@@ -78,6 +82,9 @@ export default defineRailway((ctx, project) => {
       restartPolicyType: 'ON_FAILURE',
       restartPolicyMaxRetries: 5,
     },
+    // Edge cache, following Cache-Control: hashed static files are cached; the page itself is
+    // private, no-store (per-request CSP nonce), so a Strapi publish shows on the next refresh.
+    cdn: { enabled: true },
     env: {
       NODE_ENV: 'production',
       NEXT_TELEMETRY_DISABLED: '1',
