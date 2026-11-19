@@ -9,7 +9,7 @@ inventory, the content-model draft and the risks. Measurements were taken on **1
 > playheads, and colour-picked pixels. No HTML, CSS or JS source was saved, read for reuse or copied. No class
 > names, selectors, keyframes or scripts are carried into our code. No cloning or export tool was used.
 > Individual image, video and Lottie files were listed from network requests so they can be uploaded to
-> Strapi later, which the brief allows for images (videos and Lottie are an open question, see §9).
+> Strapi later, which the brief allows for images (Surge cleared the videos and Lottie on 17 Nov, see §9).
 >
 > Screenshots, recordings and raw measurement data live in `docs/reference/` (gitignored, local only, so
 > we never redistribute the design). Paths below are relative to that folder.
@@ -190,10 +190,16 @@ Each section lists: content fields → desktop behaviour → static (≤991) lay
 
 ### 3.0 Preloader (≥992 only)
 - **Content:** none (the counter is functional UI).
-- **Desktop:** full-screen stage gradient, centred counter "0%…100%" (Instrument Serif, about 32px, white).
+- **Desktop:** full-screen stage gradient, centred counter "0%…100%" in the hero heading's type style (Instrument
+  Serif 96px from 992 up, -0.04em, white; re-measured on 19 Nov, the first "about 32px" was read off scaled screenshots).
   Measured: counts **0→100 in ~1.2s with an ease-in-out curve**, holds at 100% for ~1.9s (assets loading),
   then the overlay **fades out over ~0.8s**. The header and hero heading **fade in over ~0.7s**, starting about
   2.0s after 100%; during this fade the nav labels **scramble once** and resolve to their text. Pen frame 0 is already in place underneath.
+- **Hero heading reveal (re-measured 19 Nov, frame by frame at 1440×900):** not a plain fade. Each line resolves
+  letter by letter: a random lowercase letter flickers for ~70ms at each position, then fades out over 250ms
+  (ease-out) while the real letter fades in. The wave crosses a line in ~0.6s whatever its length, the second
+  line starts 50ms after the first, and the whole reveal takes ~0.95s. It runs about 1s after 100% on a timer,
+  so on a slow load it can play under the overlay. ≥992 only; on phones the heading is plain text.
 - **≤991:** no preloader.
 - **Ours:** real progress (fonts, Lottie, first video metadata), minimum 1.2s, fade 0.8s, hard timeout 6s.
 
@@ -323,12 +329,12 @@ Each section lists: content fields → desktop behaviour → static (≤991) lay
 
 | # | Interaction | Where | Trigger | Behaviour | Confidence |
 |---|---|---|---|---|---|
-| 1 | Preloader counter + reveal | ≥992 | load | §3.0 timings | High (measured) |
+| 1 | Preloader counter + reveal | ≥992 | load | §3.0 timings, including the letter-by-letter hero heading | High (measured) |
 | 2 | Header hide/show | all | scroll direction | hide past hero, show on any scroll-up, translateY | High |
 | 3 | Header theme switch | all | section under header | white ↔ black text | High |
 | 4 | Nav hover | ≥992 | hover | 1px underline fades in/out | High |
 | 5 | Nav text scramble | ≥992 | page load | Labels show random letters that resolve to the real label once, during the header reveal (~0.7s). Not on hover. | Medium (seen by eye, §9) |
-| 6 | Order CTA hover | ≥992 | hover | subtle (to match in Phase 4) | Medium |
+| 6 | Order CTA hover | ≥992 | hover | background black → #f20 (the error red) over 0.2s, `ease` (measured 19 Nov) | High |
 | 7 | Waitlist modal | all | CTA | open/close, Esc, overlay click, 4 states | High |
 | 8 | Hero sequence scrub | ≥992 | scroll | 76-frame Lottie tied to the 1.7vh pin | High |
 | 9 | Column wipe ↑ (×2) and ↓ (×1) | ≥992 | scroll | §3.2, §3.6, §3.7 | High |
@@ -445,7 +451,7 @@ theme per section, and the reference's design-width scaling numbers.
 |---|---|---|---|
 | 1 | **Time:** ~3.5 days for 7 phases | High | Order work by assessment weight: infra and CMS first (deterministic marks), then static layouts, then scenes by visual impact (hero, specs, smart paper, colorways, then transitions). Cut Strapi Preview. |
 | 2 | **Railway $5 trial** may not last until the round closes (3 always-on services + volume) | High | Watch usage daily. Tell you before anything billable. Keep services small. |
-| 3 | **Video/Lottie reuse** is not explicitly allowed by the brief | Medium | Ask Surge (§9). Fallback: still images with CSS/GSAP motion in place of the sequence and videos. |
+| 3 | **Video/Lottie reuse** is not explicitly allowed by the brief | Medium | Ask Surge (§9). **Resolved:** cleared on 17 Nov, so the sequence and videos are reused. |
 | 4 | **Art-directed images** (~60 files) make the seed and editor UX heavy | Medium | `responsive-image` with fallbacks; an idempotent seed uploads everything. |
 | 5 | **Page weight:** 1.77MB Lottie + 2×3MB video + images | Medium | Lottie desktop-only and loaded during the preloader; videos `preload="metadata"` and lazy; `next/image` sizes; mobile never loads the sequence. |
 | 6 | **Scene fidelity:** 9 bespoke transitions | Medium | Fine per-scene capture (100px steps) in Phase 4; side-by-side QA script. |
@@ -483,8 +489,9 @@ theme per section, and the reference's design-width scaling numbers.
 3. **"Made in Taptop" credit:** keep it as-is (seeded content; editors can change it).
 
 **For Surge (email Kavinda; the candidate sends it):**
-1. May we reuse the reference's **videos** and **Lottie** (image sequence), or only still images?
-2. Should reviewer accounts be **Super Admin** or **Editor**?
+1. ~~May we reuse the reference's **videos** and **Lottie** (image sequence), or only still images?~~
+   **Yes**, cleared on 17 Nov; both are reused.
+2. Should reviewer accounts be **Super Admin** or **Editor**? (The candidate creates the accounts.)
 
 ---
 

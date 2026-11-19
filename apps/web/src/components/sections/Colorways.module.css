@@ -1,5 +1,5 @@
 /*
- * Phones/tablets: full-height slides, centred copy, progress 16 from the bottom.
+ * Phones/tablets: full-height stacked slides, centred copy, progress 16 from the bottom.
  * Desktop 1440: one 100vh stage; copy split around the centred pen (left part ends 74 left of
  * centre, right part starts 64 right of it), vertically centred; progress 40 from the bottom.
  */
@@ -8,26 +8,27 @@
   background: var(--c-black);
 }
 
+/* The slides stack; on phones and tablets a horizontal swipe cross-fades them
+   (components/ui/fade-carousel.ts), while vertical swipes still scroll the page. */
 .track {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-}
-
-.track::-webkit-scrollbar {
-  display: none;
+  display: grid;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .slide {
   position: relative;
-  flex: 0 0 100%;
+  grid-area: 1 / 1;
   height: 100svh;
   min-height: calc(560 * var(--u));
-  scroll-snap-align: start;
   overflow: hidden;
   color: var(--text);
+}
+
+/* Until the script takes over (and without it), the intro shows. */
+.slide:not([data-slide='0']) {
+  visibility: hidden;
 }
 
 /* Outside the scroll scene the stage does not affect layout. */
@@ -46,6 +47,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  -webkit-user-drag: none;
 }
 
 .text {
@@ -62,8 +64,10 @@
   display: block;
 }
 
+/* Above the slides, which the fade slider stacks with z-index up to 2. */
 .progress {
   position: absolute;
+  z-index: 3;
   left: 0;
   right: 0;
   bottom: calc(16 * var(--u));
@@ -112,10 +116,6 @@
     position: absolute;
     inset: 0;
     height: auto;
-  }
-
-  .slide:not([data-slide='0']) {
-    visibility: hidden;
   }
 
   .start {

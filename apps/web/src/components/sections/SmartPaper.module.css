@@ -60,6 +60,17 @@
   display: none;
 }
 
+/* Copies of the last and first slide at the two ends, so swiping loops (as on the reference).
+   Shown only once the script that jumps between copy and original runs; without it the strip
+   is a plain one. */
+.clone {
+  display: none;
+}
+
+.track[data-looping] > .clone {
+  display: block;
+}
+
 .step {
   --pad: 20;
   --step-h: 680;
@@ -127,9 +138,11 @@
   -webkit-backdrop-filter: blur(calc(12 * var(--u)));
 }
 
+/* Above every slide: the steps carry z-index 1 to their count so they stack on large screens,
+   and on phones they would otherwise cover it. */
 .progress {
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   left: 0;
   right: 0;
   bottom: calc(16 * var(--u));
@@ -191,6 +204,10 @@
 
   .step:not([data-step='0']) {
     visibility: hidden;
+  }
+
+  .track[data-looping] > .clone {
+    display: none;
   }
 
   .step::after {
@@ -304,10 +321,6 @@
 
   .step:not([data-step='0']) {
     visibility: visible;
-  }
-
-  .progress {
-    z-index: 10;
   }
 
   .circle {

@@ -39,3 +39,6 @@ videos/
 
 # Written by `next dev` on every run (agent hints for the installed Next.js); generated, not source
 apps/web/AGENTS.md
+
+# Local only: the screen-recording plan
+docs/recording-script.md

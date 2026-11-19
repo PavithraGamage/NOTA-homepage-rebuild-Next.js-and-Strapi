@@ -75,11 +75,19 @@ both the CSS and the JavaScript, so layout never waits for JS.
   cinematic mode; until the frames are decoded the server-rendered first frame shows.
 - **Preloader** (`components/motion/Preloader.tsx`) follows real progress (fonts and the sequence), never
   counts faster than the reference's 1.2s, and gives up after 6s; CSS fades it out after 6s even if the
-  script never runs. When it ends, the header and hero heading fade in and the nav labels scramble once.
+  script never runs. When it ends, the header fades in, the nav labels scramble once, and the hero heading
+  reveals letter by letter through random stand-ins (`scrambleIn` in `lib/animation/scramble.ts`). The real
+  text is never split: it turns transparent while an aria-hidden overlay draws each letter at the position
+  the browser measured for it, so kerning and the accessible name are untouched and nothing shifts when the
+  overlay goes (pixel-identical in Chrome, Firefox and WebKit).
 - **Header**: hides on scroll down past the hero sequence, shows on any scroll up, and takes its colours
   from the section under it (`data-header-theme`, found by hit-testing so overlapping stages work).
 - **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
   (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
+- **Phone and tablet sliders** loop both ways, as on the reference. The smart-paper steps swipe natively
+  (scroll-snap), with a copy of the last and first slide at the ends; resting on a copy jumps to the slide it
+  shows (`components/ui/carousel.ts`). The colorways stack instead, and a swipe cross-fades them, following
+  the finger and finishing in 500 ms (`components/ui/fade-carousel.ts`), with vertical swipes left to the page.
 - **Wheel easing** (`lib/animation/smooth-scroll.ts`): in cinematic mode each wheel step moves a target
   and the page glides to it (exponential, ~167 ms time constant, measured on the reference, which uses
   Lenis). Without it a mouse wheel moves the page in ~100px jumps and the scrubbed scenes jump with it.
