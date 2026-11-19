@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { Core, UID } from '@strapi/strapi';
+import type { Core } from '@strapi/strapi';
 import { globalSeed, homepageSeed, productSeed } from './content';
 import { ensureMedia } from './media';
 
@@ -16,13 +16,20 @@ export type SeedOptions = {
 type DocumentData = Record<string, unknown>;
 
 /**
+ * The seeded types, all with Draft & Publish on. Naming them (rather than any content type)
+ * keeps `publish` available once `strapi develop` has generated the content types, which drop
+ * it for types without Draft & Publish.
+ */
+type PublishedUid = 'api::product.product' | 'api::global.global' | 'api::homepage.homepage';
+
+/**
  * Creates (or, with overwrite, replaces) a published document. Single types are found with
  * findFirst; collection entries by a filter. `update` cannot publish in one call in Strapi 5,
  * so updates are followed by an explicit publish.
  */
 async function upsertPublished(
   strapi: Core.Strapi,
-  uid: UID.ContentType,
+  uid: PublishedUid,
   data: DocumentData,
   options: SeedOptions,
   filters?: Record<string, string>,

@@ -48,7 +48,7 @@ export function SmartPaper({ section }: { section: SmartPaperSection }) {
           <Progress count={count} className={styles.progress} />
         </div>
 
-        <span className={styles.circle} data-anim="circle" aria-hidden="true" />
+        <span className={styles.circle} data-anim="circle" data-header-theme="light" aria-hidden="true" />
       </div>
     </Scene>
   );
