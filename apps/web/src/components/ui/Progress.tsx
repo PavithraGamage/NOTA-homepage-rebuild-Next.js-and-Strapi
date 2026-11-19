@@ -2,9 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 import { loopedIndex, loopJump } from './carousel';
+import { fadeCarousel } from './fade-carousel';
 import styles from './Progress.module.css';
 
-type ProgressProps = { count: number; className?: string };
+type ProgressProps = {
+  count: number;
+  className?: string;
+  /** How the track it sits next to changes slides on phones and tablets: native swipe or fade. */
+  mode?: 'scroll' | 'fade';
+};
+
+/** Phones and tablets, where the sliders are swiped (large screens use the scroll scenes). */
+const SWIPE_LAYOUT = '(max-width: 991px)';
 
 /**
  * Marks segment `index` as current. Scroll scenes call it on every frame, so it works on plain
@@ -26,17 +35,20 @@ const SETTLE_MS = 120;
  * follows the swipeable track it sits next to (`[data-carousel-track]` in the same parent);
  * on large screens the track does not scroll and the scroll scene drives it instead.
  *
+ * With `mode="fade"` the slides stack and a swipe cross-fades them instead (see fade-carousel).
+ *
  * If the track has copies at both ends (`[data-clone]`), it also loops: the copies are shown
  * once this runs, the track starts on the first real slide, and whenever it comes to rest on a
  * copy it jumps to the real slide the copy shows. They look the same, so the swipe just wraps.
  */
-export function Progress({ count, className }: ProgressProps) {
+export function Progress({ count, className, mode = 'scroll' }: ProgressProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const progress = ref.current;
     const track = progress?.parentElement?.querySelector<HTMLElement>('[data-carousel-track]');
     if (!progress || !track) return;
+    if (mode === 'fade') return followFade(track, progress);
     const canLoop = track.querySelector(':scope > [data-clone]') !== null;
     const slides = track.querySelectorAll(':scope > :not([data-clone])').length;
     const looping = () => track.hasAttribute('data-looping');
@@ -87,7 +99,7 @@ export function Progress({ count, className }: ProgressProps) {
       cancelAnimationFrame(frame);
       window.clearTimeout(timer);
     };
-  }, []);
+  }, [mode]);
 
   return (
     <div ref={ref} className={`${styles.progress} ${className ?? ''}`} data-progress aria-hidden="true">
@@ -96,4 +108,22 @@ export function Progress({ count, className }: ProgressProps) {
       ))}
     </div>
   );
+}
+
+/** Runs the fade slider while the swipe layout applies; the progress follows it. */
+function followFade(track: HTMLElement, progress: HTMLElement): () => void {
+  const query = window.matchMedia(SWIPE_LAYOUT);
+  let stop: (() => void) | undefined;
+  const sync = () => {
+    stop?.();
+    stop = undefined;
+    if (query.matches) stop = fadeCarousel(track, (index) => setProgress(progress, index));
+    else setProgress(progress, 0);
+  };
+  sync();
+  query.addEventListener('change', sync);
+  return () => {
+    query.removeEventListener('change', sync);
+    stop?.();
+  };
 }

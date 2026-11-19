@@ -7,7 +7,8 @@ import styles from './Colorways.module.css';
 
 /**
  * The intro ("Impossible to | overthink") followed by one slide per colorway of the linked
- * product. Phones and tablets swipe; large screens stack the slides and cross-fade on scroll.
+ * product. The slides stack: on phones and tablets a swipe cross-fades them (looping, as on the
+ * reference); on large screens they cross-fade on scroll.
  */
 export function Colorways({ section }: { section: ColorwaysSection }) {
   const slides = [
@@ -50,7 +51,7 @@ export function Colorways({ section }: { section: ColorwaysSection }) {
             </li>
           ))}
         </ol>
-        <Progress count={slides.length} className={styles.progress} />
+        <Progress count={slides.length} className={styles.progress} mode="fade" />
       </div>
     </Scene>
   );
