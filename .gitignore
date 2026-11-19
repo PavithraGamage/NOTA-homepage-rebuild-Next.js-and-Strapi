@@ -37,6 +37,9 @@ videos/
 !.vscode/extensions.json
 .idea/
 
+# Written by `strapi develop` on every run (content types for TypeScript); generated, not source
+apps/cms/types/generated/
+
 # Written by `next dev` on every run (agent hints for the installed Next.js); generated, not source
 apps/web/AGENTS.md
 
