@@ -80,6 +80,10 @@ both the CSS and the JavaScript, so layout never waits for JS.
   from the section under it (`data-header-theme`, found by hit-testing so overlapping stages work).
 - **Anchors**: in cinematic mode, in-page links jump to a set point inside the target scene
   (`data-anchor-offset`), as the reference does; elsewhere the browser smooth-scrolls.
+- **Phone and tablet sliders** loop both ways, as on the reference. The smart-paper steps swipe natively
+  (scroll-snap), with a copy of the last and first slide at the ends; resting on a copy jumps to the slide it
+  shows (`components/ui/carousel.ts`). The colorways stack instead, and a swipe cross-fades them, following
+  the finger and finishing in 500 ms (`components/ui/fade-carousel.ts`), with vertical swipes left to the page.
 - **Wheel easing** (`lib/animation/smooth-scroll.ts`): in cinematic mode each wheel step moves a target
   and the page glides to it (exponential, ~167 ms time constant, measured on the reference, which uses
   Lenis). Without it a mouse wheel moves the page in ~100px jumps and the scrubbed scenes jump with it.
