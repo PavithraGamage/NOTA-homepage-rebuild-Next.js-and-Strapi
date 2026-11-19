@@ -32,7 +32,7 @@ flowchart TB
 | **Waitlist signup** collection, Draft & Publish **off** | Form entries are records, not content. Draft & Publish off also keeps them out of the revalidation webhook. |
 | **Components** for anything repeated or grouped | Spec groups, audience cards, story steps, tiles, colorways, credits and team names are lists of small typed items, so there are no rich-text blobs. Rich text is not used anywhere: the reference has no formatted paragraphs. |
 | **`shared.responsive-image`** | The reference art-directs most images per breakpoint (different crops for laptop, tablet and phones). One image plus optional crops (`max1439`, `max991`, `max767`, `max479`), each falling back to the next larger, renders as a `<picture>`. Alt text is required on the component, so every usage is described. |
-| Multi-line headings as plain `text` | A newline is the desktop line break; phones wrap naturally. Editors control breaks without markup. |
+| Multi-line headings as plain `text` | A newline is the desktop line break; phones wrap naturally (the story-step headlines keep their first break on phones, as on the reference). Editors control breaks without markup. |
 | **What stays in code** | Scroll-scene timing and easing, transitions (columns, silhouette, circle reveal, blinds), the header's light/dark theme per section, functional icons (burger, close, chevrons, the colorways progress dot), and the per-breakpoint scaling. These are design behaviour, not editorial content. |
 
 ## Types and components
