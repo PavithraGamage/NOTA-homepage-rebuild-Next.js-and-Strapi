@@ -93,7 +93,7 @@ Shared and element components: `shared.seo`, `shared.responsive-image`, `shared.
   default, which this site does not need). The seed refuses to run if any Public permission exists.
 - **Website read token**: custom, `find` on Global, Homepage and Product only, so it cannot read waitlist emails or
   list the media library. Media nested in content still populates.
-- **Website form token** (Phase 5): custom, `create` on Waitlist signup only.
+- **Website form token**: custom, `create` on Waitlist signup only.
 - Reviewers get admin accounts; Strapi's built-in Editor role covers content-only access.
 
 ![API tokens](images/admin/api-tokens.png)

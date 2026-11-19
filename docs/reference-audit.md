@@ -9,7 +9,7 @@ inventory, the content-model draft and the risks. Measurements were taken on **1
 > playheads, and colour-picked pixels. No HTML, CSS or JS source was saved, read for reuse or copied. No class
 > names, selectors, keyframes or scripts are carried into our code. No cloning or export tool was used.
 > Individual image, video and Lottie files were listed from network requests so they can be uploaded to
-> Strapi later, which the brief allows for images (videos and Lottie are an open question, see §9).
+> Strapi later, which the brief allows for images (Surge cleared the videos and Lottie on 17 Nov, see §9).
 >
 > Screenshots, recordings and raw measurement data live in `docs/reference/` (gitignored, local only, so
 > we never redistribute the design). Paths below are relative to that folder.
@@ -445,7 +445,7 @@ theme per section, and the reference's design-width scaling numbers.
 |---|---|---|---|
 | 1 | **Time:** ~3.5 days for 7 phases | High | Order work by assessment weight: infra and CMS first (deterministic marks), then static layouts, then scenes by visual impact (hero, specs, smart paper, colorways, then transitions). Cut Strapi Preview. |
 | 2 | **Railway $5 trial** may not last until the round closes (3 always-on services + volume) | High | Watch usage daily. Tell you before anything billable. Keep services small. |
-| 3 | **Video/Lottie reuse** is not explicitly allowed by the brief | Medium | Ask Surge (§9). Fallback: still images with CSS/GSAP motion in place of the sequence and videos. |
+| 3 | **Video/Lottie reuse** is not explicitly allowed by the brief | Medium | Ask Surge (§9). **Resolved:** cleared on 17 Nov, so the sequence and videos are reused. |
 | 4 | **Art-directed images** (~60 files) make the seed and editor UX heavy | Medium | `responsive-image` with fallbacks; an idempotent seed uploads everything. |
 | 5 | **Page weight:** 1.77MB Lottie + 2×3MB video + images | Medium | Lottie desktop-only and loaded during the preloader; videos `preload="metadata"` and lazy; `next/image` sizes; mobile never loads the sequence. |
 | 6 | **Scene fidelity:** 9 bespoke transitions | Medium | Fine per-scene capture (100px steps) in Phase 4; side-by-side QA script. |
@@ -483,8 +483,9 @@ theme per section, and the reference's design-width scaling numbers.
 3. **"Made in Taptop" credit:** keep it as-is (seeded content; editors can change it).
 
 **For Surge (email Kavinda; the candidate sends it):**
-1. May we reuse the reference's **videos** and **Lottie** (image sequence), or only still images?
-2. Should reviewer accounts be **Super Admin** or **Editor**?
+1. ~~May we reuse the reference's **videos** and **Lottie** (image sequence), or only still images?~~
+   **Yes**, cleared on 17 Nov; both are reused.
+2. Should reviewer accounts be **Super Admin** or **Editor**? (The candidate creates the accounts.)
 
 ---
 
