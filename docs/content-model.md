@@ -94,7 +94,8 @@ Shared and element components: `shared.seo`, `shared.responsive-image`, `shared.
 - **Website read token**: custom, `find` on Global, Homepage and Product only, so it cannot read waitlist emails or
   list the media library. Media nested in content still populates.
 - **Website form token**: custom, `create` on Waitlist signup only.
-- Reviewers get admin accounts; Strapi's built-in Editor role covers content-only access.
+- Reviewers get **Super Admin** accounts (decided 19 Nov), so they can inspect the schema, roles, tokens and
+  webhook settings. Strapi's built-in Editor role covers content-only access for day-to-day editors.
 
 ![API tokens](images/admin/api-tokens.png)
 
