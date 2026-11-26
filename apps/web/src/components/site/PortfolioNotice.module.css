@@ -1,0 +1,23 @@
+/* A thin bar under the footer, where the reference shows its "Made in Taptop" badge.
+   White at 60% on black is 6.3:1, so the notice passes AA at this size. */
+.notice {
+  padding: calc(12 * var(--u)) calc(var(--gutter) * var(--u));
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  background: var(--c-black);
+  color: rgb(255 255 255 / 0.6);
+  font-size: calc(11 * var(--u));
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.notice a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.notice a:hover,
+.notice a:focus-visible {
+  color: var(--c-white);
+}

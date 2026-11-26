@@ -3,6 +3,7 @@ import { getHomepage, getSiteChrome } from '@/lib/content/load';
 import { getServerEnv } from '@/lib/env';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
+import { PortfolioNotice } from '@/components/site/PortfolioNotice';
 import { WaitlistModal } from '@/components/site/WaitlistModal';
 import { WaitlistProvider } from '@/components/site/WaitlistContext';
 import { SectionRenderer } from '@/components/sections/SectionRenderer';
@@ -55,6 +56,7 @@ export default async function HomePage() {
         ))}
       </main>
       <Footer chrome={chrome} />
+      <PortfolioNotice />
       <WaitlistModal copy={chrome.waitlist} />
     </WaitlistProvider>
   );

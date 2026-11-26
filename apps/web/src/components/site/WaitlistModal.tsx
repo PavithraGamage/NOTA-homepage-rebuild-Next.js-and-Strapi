@@ -135,6 +135,10 @@ function WaitlistForm({ copy, source }: { copy: WaitlistCopy; source: WaitlistSo
           <span className={styles.dot} aria-hidden="true" />
         </button>
       </form>
+      {/* Hard-coded like the footer notice: visitors must know this isn't a real waitlist. */}
+      <p className={styles.notice}>
+        Demo form on an unofficial rebuild. Your email is stored only to show the form working, and is never shared.
+      </p>
     </>
   );
 }
