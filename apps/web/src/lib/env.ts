@@ -14,8 +14,8 @@ export const serverEnvSchema = z.object({
   /** Strapi's public origin, used to build absolute media URLs for the browser. */
   STRAPI_PUBLIC_URL: z.url(),
   /**
-   * Where media is served when uploads live in cloud storage rather than on Strapi's disk,
-   * e.g. https://res.cloudinary.com/<cloud-name>. Allowed by the CSP and next/image.
+   * Where media is served when uploads live in object storage rather than on Strapi's disk: the
+   * bucket's public address (the CMS's S3_PUBLIC_URL). Allowed by the CSP and next/image.
    */
   MEDIA_PUBLIC_URL: z.url().optional(),
   /** Read-only API token for published content. */

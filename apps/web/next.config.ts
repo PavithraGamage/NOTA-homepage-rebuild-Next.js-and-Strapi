@@ -15,8 +15,8 @@ if (!URL.canParse(rawStrapiPublicUrl)) {
 const strapiPublicUrl = new URL(rawStrapiPublicUrl);
 
 /**
- * Optional cloud storage for uploads (e.g. https://res.cloudinary.com/<cloud-name>), used where
- * the CMS host has no persistent disk. Its path is kept, so only this account's files are allowed.
+ * Optional object storage for uploads (e.g. a Neon bucket: https://<branch>.storage…neon.tech/<bucket>),
+ * used where the CMS host has no persistent disk. Its path is kept, so only that bucket is allowed.
  */
 const rawMediaPublicUrl = process.env.MEDIA_PUBLIC_URL;
 if (rawMediaPublicUrl && !URL.canParse(rawMediaPublicUrl)) {
@@ -55,8 +55,9 @@ const nextConfig: NextConfig = {
       ...(mediaPublicUrl
         ? [
             {
-              protocol: 'https' as const,
+              protocol: mediaPublicUrl.protocol.replace(':', '') as 'http' | 'https',
               hostname: mediaPublicUrl.hostname,
+              port: mediaPublicUrl.port,
               pathname: `${mediaPublicUrl.pathname.replace(/\/$/, '')}/**`,
             },
           ]

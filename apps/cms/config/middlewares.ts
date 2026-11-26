@@ -1,12 +1,14 @@
 import type { Core } from '@strapi/strapi';
 
 /**
- * With uploads on Cloudinary (config/plugins.ts), the admin's media library must be allowed to
+ * With uploads in object storage (config/plugins.ts), the admin's media library must be allowed to
  * show them. Strapi's defaults are repeated because these directives replace them.
  */
 const security = (env: Core.Config.Shared.ConfigParams['env']) => {
-  if (!env('CLOUDINARY_NAME')) return 'strapi::security';
-  const mediaSources = ["'self'", 'data:', 'blob:', 'https://market-assets.strapi.io', 'https://res.cloudinary.com'];
+  const publicUrl = env('S3_PUBLIC_URL');
+  if (!env('S3_BUCKET') || !publicUrl || !URL.canParse(publicUrl)) return 'strapi::security';
+  const storage = new URL(publicUrl).origin;
+  const mediaSources = ["'self'", 'data:', 'blob:', 'https://market-assets.strapi.io', storage];
   return {
     name: 'strapi::security',
     config: {

@@ -25,12 +25,12 @@ describe('contentSecurityPolicy', () => {
       contentSecurityPolicy('abc', {
         NODE_ENV: 'production',
         STRAPI_PUBLIC_URL: 'https://cms.example.com',
-        MEDIA_PUBLIC_URL: 'https://res.cloudinary.com/demo-cloud',
+        MEDIA_PUBLIC_URL: 'https://br-demo.storage.c-1.ap-southeast-1.aws.neon.tech/nota-media',
       }),
     );
     for (const directive of ['img-src', 'media-src', 'connect-src']) {
-      expect(csp[directive]).toContain('https://res.cloudinary.com');
-      expect(csp[directive]).not.toContain('demo-cloud');
+      expect(csp[directive]).toContain('https://br-demo.storage.c-1.ap-southeast-1.aws.neon.tech');
+      expect(csp[directive]).not.toContain('nota-media');
     }
   });
 

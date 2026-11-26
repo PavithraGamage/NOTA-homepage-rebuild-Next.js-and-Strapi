@@ -23,7 +23,7 @@ export function proxy(request: NextRequest) {
 export function contentSecurityPolicy(nonce: string, env: Partial<Record<string, string>> = process.env): string {
   const development = env.NODE_ENV === 'development';
   const cms = origin(env.STRAPI_PUBLIC_URL);
-  // Cloud storage for uploads (e.g. Cloudinary), when media isn't served by Strapi itself.
+  // Object storage for uploads (e.g. a Neon bucket), when media isn't served by Strapi itself.
   const media = origin(env.MEDIA_PUBLIC_URL);
   // Only on an https site: WebKit also upgrades http://localhost, which breaks local builds.
   const httpsSite = env.SITE_URL?.startsWith('https://') ?? false;

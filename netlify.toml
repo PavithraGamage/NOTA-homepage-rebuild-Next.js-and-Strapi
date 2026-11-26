@@ -1,6 +1,6 @@
-# Netlify builds and serves the website (apps/web). Strapi runs on Render (render.yaml), the
-# database on Neon and uploads on Cloudinary. Variables are set in Netlify's UI: see
-# apps/web/.env.example and README → Hosting.
+# Netlify builds and serves the website (apps/web). Strapi runs on Render (render.yaml), and the
+# database and uploads are on Neon. Variables are set in Netlify's UI: see apps/web/.env.example
+# and docs/hosting.md.
 
 [build]
   base = "apps/web"

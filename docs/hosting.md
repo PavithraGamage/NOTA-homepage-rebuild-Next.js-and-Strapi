@@ -1,4 +1,4 @@
-# Hosting on free plans: Netlify, Render, Neon and Cloudinary
+# Hosting on free plans: Netlify, Render and Neon
 
 The portfolio deployment. The assignment itself ran on Railway (tag `v1.0.0`; see
 [architecture → Railway](architecture.md#railway-configuration-as-code)).
@@ -8,16 +8,17 @@ The portfolio deployment. The assignment itself ran on Railway (tag `v1.0.0`; se
 | Website (Next.js) | Netlify | [`netlify.toml`](../netlify.toml) | Serves cached pages; wakes the CMS during each build |
 | CMS (Strapi) | Render | [`render.yaml`](../render.yaml) | 512 MB, sleeps after 15 min idle, up to a minute to wake |
 | Database (Postgres) | Neon, Singapore | `DATABASE_URL` on Render | Render's own free Postgres expires after 30 days |
-| Uploads | Cloudinary | `CLOUDINARY_*` on Render | Render's free disk is wiped on every restart |
+| Uploads | Neon Object Storage, same project | `S3_*` on Render | S3-compatible; Render's free disk is wiped on every restart |
 
 ```mermaid
 flowchart LR
   U["Visitor"] -->|"HTTPS"| WEB["Netlify: Next.js"]
-  U -->|"images, video"| CDN[("Cloudinary")]
+  U -->|"logo, hero file, video"| OBJ[("Neon: Object Storage")]
+  WEB -->|"images, resized by Netlify's image CDN"| OBJ
   ED["Editor"] -->|"HTTPS: /admin"| CMS["Render: Strapi"]
   WEB -->|"HTTPS + read token"| CMS
   CMS -->|"TLS"| PG[("Neon: Postgres")]
-  CMS -->|"uploads"| CDN
+  CMS -->|"S3 API: uploads"| OBJ
   CMS -->|"webhook: POST /api/revalidate"| WEB
 ```
 
@@ -28,29 +29,40 @@ sleeping CMS only slows the first visit after a publish or a new deploy, not ord
 
 ## One-time setup
 
-Order matters: the CMS needs the database and Cloudinary, and the website needs tokens from the CMS.
+Order matters: the CMS needs the database and the bucket, and the website needs tokens from the CMS.
 
-1. **Neon:** create a project in AWS Singapore (`ap-southeast-1`). Copy the **direct** connection
-   string (the host without `-pooler`): Strapi's migrations need a session, not a transaction pool.
-2. **Cloudinary:** create an account and copy the cloud name, API key and API secret
-   (*Settings → API Keys*).
-3. **Admin user and content, from your machine** (so no one can claim the admin on the live URL
-   first). In `apps/cms`, with the Neon and Cloudinary values:
+1. **Neon database:** a project in AWS Singapore (`aws-ap-southeast-1`). Copy the **direct**
+   connection string (the host without `-pooler`): Strapi's migrations need a session, not a
+   transaction pool.
+2. **Neon bucket**, in the same project and branch (*Object storage → New bucket*):
+   - access level **`public_read`**: visitors' browsers load the files directly, and the level
+     can't be changed after the bucket is created;
+   - note the bucket's S3 endpoint and region (the console, or `GET /projects/{id}/branches/{id}/storage`
+     in Neon's API);
+   - create a key pair with `neon credentials create --scope storage:read --scope storage:write`. The
+     secret is shown once, so put it straight into a password manager or the env file below.
+3. **Content, admin user and CORS, from your machine** (so no one can claim the admin on the live URL
+   first). Put the values in `apps/cms/.env.neon` (git ignores `.env.*` files), one `NAME='value'` per
+   line with single quotes (Neon's connection string contains `&`, which the shell would otherwise
+   split on), then in `apps/cms`:
 
    ```bash
-   export DATABASE_URL='postgres://…neon.tech/neondb' DATABASE_SSL=true \
-     CLOUDINARY_NAME=… CLOUDINARY_KEY=… CLOUDINARY_SECRET=… \
-     WEB_REVALIDATE_URL=   # empty: don't point the live webhook at localhost
-   npm run seed                                 # schema, all content, media to Cloudinary
+   set -a; . ./.env.neon; set +a      # DATABASE_URL, DATABASE_SSL=true, S3_* and CORS_ORIGINS
+   export WEB_REVALIDATE_URL=          # empty: don't point the live webhook at localhost
+   npm run seed                        # schema, all content, media into the bucket
    npx strapi admin:create-user --firstname=… --email=… --password=…
+   npm run storage:cors                # lets the site's origins read the bucket from the browser
    ```
 
+   `S3_PUBLIC_URL` is the endpoint followed by `/<bucket>`. `CORS_ORIGINS` is the Netlify URL (add
+   `http://localhost:3000` for local testing); if the Netlify URL isn't known yet, re-run
+   `npm run storage:cors` after step 6.
 4. **Render:** *New → Blueprint*, pick this repository and the `portfolio/netlify` branch. Render
-   reads `render.yaml`, generates Strapi's secrets and asks for the rest: `DATABASE_URL`, the three
-   `CLOUDINARY_*` values, and a `REVALIDATE_SECRET`
+   reads `render.yaml`, generates Strapi's secrets and asks for the rest: `DATABASE_URL`, the six
+   `S3_*` values, and a `REVALIDATE_SECRET`
    (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`). Set `PUBLIC_URL` to
    the service URL Render shows (e.g. `https://nota-cms.onrender.com`). Leave `CORS_ORIGINS` and
-   `WEB_REVALIDATE_URL` empty until step 6.
+   `WEB_REVALIDATE_URL` empty until step 7.
 5. **Tokens, in the live admin** (`/admin` → *Settings → API Tokens*, type Custom, duration
    Unlimited). They must be made there: tokens are hashed with the server's `API_TOKEN_SALT`.
    - read token: *find* on Global, Homepage and Product;
@@ -61,7 +73,7 @@ Order matters: the CMS needs the database and Cloudinary, and the website needs 
    | Variable | Value |
    |---|---|
    | `STRAPI_INTERNAL_URL`, `STRAPI_PUBLIC_URL` | the Render URL |
-   | `MEDIA_PUBLIC_URL` | `https://res.cloudinary.com/<cloud-name>` |
+   | `MEDIA_PUBLIC_URL` | the bucket's public address (the same value as `S3_PUBLIC_URL`) |
    | `STRAPI_READ_TOKEN`, `STRAPI_FORM_TOKEN` | from step 5 |
    | `REVALIDATE_SECRET` | the same value as on Render |
    | `SITE_URL` | the Netlify URL, e.g. `https://nota-rebuild.netlify.app` |
@@ -75,8 +87,8 @@ Order matters: the CMS needs the database and Cloudinary, and the website needs 
 - Change a heading in the admin and publish: the next refresh shows it.
 - Submit the order form: the entry appears under *Waitlist signup*; a repeat address shows success
   without a second entry.
-- Images, videos and the hero animation load from `res.cloudinary.com` with no CSP errors in the
-  console.
+- The header wordmark shows, the hero animation scrubs, and the console has no CSP or CORS errors.
+  A missing wordmark means the bucket's CORS rule doesn't include the site's origin (step 3).
 
 ## Known limits of the free plans
 
@@ -85,6 +97,12 @@ Order matters: the CMS needs the database and Cloudinary, and the website needs 
 - **Memory:** Strapi runs in 512 MB. If a Render build fails for lack of memory, building the admin
   panel is the heavy step; a paid instance or building elsewhere are the ways out.
 - **Database:** Neon's free plan is 1 GB and pauses after 5 idle minutes (resumes in about a second).
+- **Storage:** 5 GB on the free plan, served from Singapore without a CDN. Netlify's image CDN
+  resizes and caches the images, but videos, the logo and the hero file come straight from the
+  bucket, so they load slower far from Singapore. Neon's suggested fix is a CDN in front of the
+  bucket. SVGs are served from the storage domain, which holds no cookies or sessions.
+- **Neon Object Storage is in beta.** The upload settings are plain S3, so moving to Cloudflare R2
+  or AWS S3 means changing the `S3_*` values and copying the files.
 
 ## After the assignment round closes
 

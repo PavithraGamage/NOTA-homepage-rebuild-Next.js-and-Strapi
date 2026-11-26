@@ -8,7 +8,7 @@ word, image, link and price in it is edited in a self-hosted Strapi CMS.
 > hero animation belong to their creators; the code is my own (see [Credits](#credits)). The site is `noindex`.
 
 **Stack:** Next.js 16 (App Router, TypeScript), Strapi 5 on Postgres, CSS Modules, GSAP ScrollTrigger, Zod,
-Vitest and Playwright. Hosted on Netlify (site), Render (CMS), Neon (database) and Cloudinary (media). The
+Vitest and Playwright. Hosted on Netlify (site), Render (CMS) and Neon (database and media storage). The
 assignment build is tagged [`v1.0.0`](https://github.com/PavithraGamage/senior-web-developer-surge/tree/v1.0.0)
 and ran on Railway.
 
@@ -121,7 +121,7 @@ Every type, component and validation rule: [docs/content-model.md](docs/content-
 | Site | Netlify | Next.js 16 support, CDN, free plan |
 | CMS | Render (free) | Runs Strapi as a long-lived Node server; sleeps when idle |
 | Database | Neon (free) | Postgres that doesn't expire, in the CMS's region |
-| Media | Cloudinary (free) | Render's free disk is wiped on restart |
+| Media | Neon Object Storage (free) | S3-compatible, same project; Render's free disk is wiped on restart |
 
 Config lives in [`netlify.toml`](netlify.toml) and [`render.yaml`](render.yaml); the setup steps and checks are
 in [docs/hosting.md](docs/hosting.md).
@@ -138,6 +138,7 @@ Railway's private network, and deploys waited for CI. Details:
   cheap because the data is cached.
 - **Free plans over always-on servers.** The CMS sleeps after 15 idle minutes, so the admin, and the first page
   view after a publish or a deploy, can wait up to a minute. Netlify builds wake it in the background.
+  Media comes from one region without a CDN; Netlify's image CDN covers the images, not the videos.
 - **Honeypot and rate limit, not a captcha.** No third-party script or friction. The limiter is in memory, which
   was right for one Railway instance; on Netlify each function instance keeps its own count.
 - **Motion timing lives in code, content in the CMS.** Scene lengths and eases are design behaviour measured on the
@@ -157,6 +158,7 @@ Railway's private network, and deploys waited for CI. Details:
 - **Visual regression tests:** Playwright screenshots at each breakpoint and scroll position, compared in CI.
 - **End-to-end tests in CI**, with a Postgres service and the seed.
 - **A shared store for the rate limit** (Netlify Blobs or Redis), so it holds across function instances.
+- **A CDN in front of the media bucket**, so videos load fast far from Singapore.
 - **Strapi Preview with Next.js Draft Mode**, so editors see a draft on the real page before publishing.
 - **An optional short label per spec bullet**, to reproduce the reference's shorter copy at 992–1439 px.
 - **Real-device testing** on iOS Safari and Android Chrome, and **Lighthouse CI budgets**.

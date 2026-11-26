@@ -20,24 +20,41 @@ const deniedTypes = [
 ];
 
 /**
- * Uploads go to Cloudinary when its credentials are set (Render's free plan has no persistent
- * disk, so local files would vanish on every restart), and to public/uploads otherwise.
+ * Uploads go to S3-compatible object storage when a bucket is set (Render's free plan has no
+ * persistent disk, so local files would vanish on every restart), and to public/uploads otherwise.
+ * Written for Neon Object Storage; the same settings work for Cloudflare R2 or AWS S3.
  */
-const cloudinaryProvider = (env: Core.Config.Shared.ConfigParams['env']) =>
-  env('CLOUDINARY_NAME')
+const s3Provider = (env: Core.Config.Shared.ConfigParams['env']) =>
+  env('S3_BUCKET')
     ? {
-        provider: 'cloudinary',
+        provider: 'aws-s3',
         providerOptions: {
-          cloud_name: env('CLOUDINARY_NAME'),
-          api_key: env('CLOUDINARY_KEY'),
-          api_secret: env('CLOUDINARY_SECRET'),
+          // Public address of the bucket (endpoint + /bucket for path-style stores), so file URLs
+          // don't depend on how each store reports an upload's location.
+          baseUrl: env('S3_PUBLIC_URL'),
+          rootPath: env('S3_ROOT_PATH', 'nota'),
+          s3Options: {
+            endpoint: env('S3_ENDPOINT'),
+            region: env('S3_REGION'),
+            // Neon (and most S3-compatible stores) only support path-style addressing.
+            forcePathStyle: true,
+            credentials: {
+              accessKeyId: env('S3_ACCESS_KEY_ID'),
+              secretAccessKey: env('S3_SECRET_ACCESS_KEY'),
+            },
+            // Only send checksums when an operation requires them; newer AWS SDK defaults
+            // aren't supported by every S3-compatible store.
+            requestChecksumCalculation: 'WHEN_REQUIRED',
+            responseChecksumValidation: 'WHEN_REQUIRED',
+            params: {
+              Bucket: env('S3_BUCKET'),
+              // Present but undefined: the provider would otherwise send `public-read`, which Neon
+              // rejects with 501. Public access is a property of the bucket instead.
+              ACL: undefined,
+            },
+          },
         },
-        actionOptions: {
-          // One folder per site, so the account can hold other projects too.
-          upload: { folder: env('CLOUDINARY_FOLDER', 'nota') },
-          uploadStream: { folder: env('CLOUDINARY_FOLDER', 'nota') },
-          delete: {},
-        },
+        actionOptions: { upload: {}, uploadStream: {}, delete: {} },
       }
     : {};
 
@@ -52,7 +69,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
   },
   upload: {
     config: {
-      ...cloudinaryProvider(env),
+      ...s3Provider(env),
       security: {
         allowedTypes: allowedMediaTypes,
         deniedTypes,
