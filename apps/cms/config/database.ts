@@ -29,8 +29,8 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database<
     client: 'postgres',
     connection: {
       ...parseDatabaseUrl(env('DATABASE_URL')),
-      // Traffic stays on Railway's private network, so SSL stays off unless we ever
-      // connect through a public proxy.
+      // Off on a private network (Railway, docker compose); on for a hosted database reached
+      // over the internet, such as Neon (DATABASE_SSL=true).
       ssl: env.bool('DATABASE_SSL', false) && {
         rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
       },

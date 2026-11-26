@@ -1,9 +1,27 @@
 import type { Core } from '@strapi/strapi';
 
+/**
+ * With uploads on Cloudinary (config/plugins.ts), the admin's media library must be allowed to
+ * show them. Strapi's defaults are repeated because these directives replace them.
+ */
+const security = (env: Core.Config.Shared.ConfigParams['env']) => {
+  if (!env('CLOUDINARY_NAME')) return 'strapi::security';
+  const mediaSources = ["'self'", 'data:', 'blob:', 'https://market-assets.strapi.io', 'https://res.cloudinary.com'];
+  return {
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: { 'img-src': mediaSources, 'media-src': mediaSources },
+      },
+    },
+  };
+};
+
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Middlewares => [
   'strapi::logger',
   'strapi::errors',
-  'strapi::security',
+  security(env),
   {
     // The web app talks to Strapi server-side, so browsers never need CORS access.
     // We still restrict it to the site's origin instead of Strapi's permissive default.
