@@ -1,0 +1,64 @@
+# Render Blueprint: the CMS (Strapi) on the free plan. The website is on Netlify (netlify.toml),
+# the database on Neon and uploads on Cloudinary, all on free plans. See README → Hosting.
+#
+# Free-plan limits that shape this setup: 512 MB of memory, the service sleeps after 15 minutes
+# without traffic (up to a minute to wake), and the disk is wiped on every restart, so uploads
+# go to Cloudinary. Render's free Postgres expires after 30 days, so the database is on Neon.
+services:
+  - type: web
+    name: nota-cms
+    runtime: node
+    plan: free
+    region: singapore # keep it in the same region as the Neon database
+    rootDir: apps/cms
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /_health
+    autoDeployTrigger: checksPass # deploy only after CI passes
+    buildFilter:
+      paths:
+        - apps/cms/**
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      # Render terminates TLS and forwards plain HTTP; trust X-Forwarded-* for secure cookies.
+      - key: TRUST_PROXY
+        value: 'true'
+
+      # Secrets Strapi needs. Render generates each once; they never leave Render.
+      - key: APP_KEYS
+        generateValue: true
+      - key: API_TOKEN_SALT
+        generateValue: true
+      - key: ADMIN_JWT_SECRET
+        generateValue: true
+      - key: TRANSFER_TOKEN_SALT
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+
+      # Set in the dashboard (sync: false keeps them out of this file).
+      - key: PUBLIC_URL # this service's URL, e.g. https://nota-cms.onrender.com
+        sync: false
+      - key: DATABASE_URL # Neon's direct (not pooled) connection string
+        sync: false
+      - key: DATABASE_SSL
+        value: 'true'
+      - key: CLOUDINARY_NAME
+        sync: false
+      - key: CLOUDINARY_KEY
+        sync: false
+      - key: CLOUDINARY_SECRET
+        sync: false
+      - key: CORS_ORIGINS # the Netlify site's URL
+        sync: false
+      - key: WEB_REVALIDATE_URL # https://<site>.netlify.app/api/revalidate
+        sync: false
+      - key: REVALIDATE_SECRET # the same value as on Netlify
+        sync: false

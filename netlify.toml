@@ -1,0 +1,16 @@
+# Netlify builds and serves the website (apps/web). Strapi runs on Render (render.yaml), the
+# database on Neon and uploads on Cloudinary. Variables are set in Netlify's UI: see
+# apps/web/.env.example and README → Hosting.
+
+[build]
+  base = "apps/web"
+  publish = ".next"
+  # The CMS sleeps when idle on Render's free plan and takes up to a minute to wake. Waking it in
+  # the background during the build means it is up when the new deploy gets its first visit.
+  command = "sh scripts/wake-cms.sh & npm run build"
+  # Skip the build when a commit changes nothing the website uses (e.g. CMS-only or docs-only).
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../netlify.toml"
+
+[build.environment]
+  NODE_VERSION = "24"
+  NEXT_TELEMETRY_DISABLED = "1"
