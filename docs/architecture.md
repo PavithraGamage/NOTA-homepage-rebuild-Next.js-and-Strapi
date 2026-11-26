@@ -1,5 +1,9 @@
 # Architecture
 
+> **Hosting note:** this page describes the assignment deployment on Railway (tag `v1.0.0`). The
+> live portfolio deployment runs on Netlify, Render, Neon and Cloudinary instead; see
+> [hosting.md](hosting.md). The caching, motion, security and form designs below apply to both.
+
 Two independent apps in one repository, deployed as three Railway resources plus a volume.
 
 ```mermaid
