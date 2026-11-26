@@ -29,7 +29,8 @@ sleeping CMS only slows the first visit after a publish or a new deploy, not ord
 
 ## One-time setup
 
-Order matters: the CMS needs the database and the bucket, and the website needs tokens from the CMS.
+Order matters: the CMS needs the database and the bucket, the website needs tokens from the CMS, and
+the bucket's CORS rule needs the website's URL.
 
 1. **Neon database:** a project in AWS Singapore (`aws-ap-southeast-1`). Copy the **direct**
    connection string (the host without `-pooler`): Strapi's migrations need a session, not a
@@ -38,25 +39,24 @@ Order matters: the CMS needs the database and the bucket, and the website needs 
    - access level **`public_read`**: visitors' browsers load the files directly, and the level
      can't be changed after the bucket is created;
    - note the bucket's S3 endpoint and region (the console, or `GET /projects/{id}/branches/{id}/storage`
-     in Neon's API);
+     in Neon's API). The files' public address, `S3_PUBLIC_URL`, is the endpoint followed by
+     `/<bucket>`, since Neon only supports path-style URLs;
    - create a key pair with `neon credentials create --scope storage:read --scope storage:write`. The
      secret is shown once, so put it straight into a password manager or the env file below.
-3. **Content, admin user and CORS, from your machine** (so no one can claim the admin on the live URL
+3. **Content and admin user, from your machine** (so no one can claim the admin on the live URL
    first). Put the values in `apps/cms/.env.neon` (git ignores `.env.*` files), one `NAME='value'` per
    line with single quotes (Neon's connection string contains `&`, which the shell would otherwise
-   split on), then in `apps/cms`:
+   split on). Make sure `DATABASE_URL` is in it: otherwise the seed falls back to the local database
+   in `apps/cms/.env`. Then in `apps/cms`:
 
    ```bash
-   set -a; . ./.env.neon; set +a      # DATABASE_URL, DATABASE_SSL=true, S3_* and CORS_ORIGINS
+   set -a; . ./.env.neon; set +a      # DATABASE_URL, DATABASE_SSL=true and the S3_* values
    export WEB_REVALIDATE_URL=          # empty: don't point the live webhook at localhost
-   npm run seed                        # schema, all content, media into the bucket
+   npm run seed                        # schema, all content, media into the bucket (~4 min)
    npx strapi admin:create-user --firstname=… --email=… --password=…
-   npm run storage:cors                # lets the site's origins read the bucket from the browser
    ```
 
-   `S3_PUBLIC_URL` is the endpoint followed by `/<bucket>`. `CORS_ORIGINS` is the Netlify URL (add
-   `http://localhost:3000` for local testing); if the Netlify URL isn't known yet, re-run
-   `npm run storage:cors` after step 6.
+   The seed only adds what's missing, so it's safe to run again if it stops part way.
 4. **Render:** *New → Blueprint*, pick this repository and the `portfolio/netlify` branch. Render
    reads `render.yaml`, generates Strapi's secrets and asks for the rest: `DATABASE_URL`, the six
    `S3_*` values, and a `REVALIDATE_SECRET`
@@ -80,6 +80,19 @@ Order matters: the CMS needs the database and the bucket, and the website needs 
 
 7. **Back on Render:** set `CORS_ORIGINS` to the Netlify URL and `WEB_REVALIDATE_URL` to
    `<Netlify URL>/api/revalidate`, then redeploy. The webhook appears under *Settings → Webhooks*.
+8. **The bucket's CORS rule, from your machine.** A new Neon bucket lets any website read its files.
+   This step limits reading to the site, now that its URL is known. In `apps/cms`:
+
+   ```bash
+   set -a; . ./.env.neon; set +a
+   export CORS_ORIGINS='https://nota-rebuild.netlify.app,http://localhost:3000'   # your Netlify URL
+   npm run storage:cors                # replaces the bucket's rules and prints the new one
+   ```
+
+   The site's origin must be in the rule: it loads the wordmark as a CSS mask and the hero file
+   with `fetch()`, which browsers send in CORS mode, so a rule without it hides the wordmark and
+   the hero animation. Include `http://localhost:3000` if you run the site locally against this
+   bucket.
 
 ## Checks after the first deploy
 
@@ -88,7 +101,7 @@ Order matters: the CMS needs the database and the bucket, and the website needs 
 - Submit the order form: the entry appears under *Waitlist signup*; a repeat address shows success
   without a second entry.
 - The header wordmark shows, the hero animation scrubs, and the console has no CSP or CORS errors.
-  A missing wordmark means the bucket's CORS rule doesn't include the site's origin (step 3).
+  A missing wordmark means the bucket's CORS rule doesn't include the site's origin (step 8).
 
 ## Known limits of the free plans
 
@@ -100,7 +113,9 @@ Order matters: the CMS needs the database and the bucket, and the website needs 
 - **Storage:** 5 GB on the free plan, served from Singapore without a CDN. Netlify's image CDN
   resizes and caches the images, but videos, the logo and the hero file come straight from the
   bucket, so they load slower far from Singapore. Neon's suggested fix is a CDN in front of the
-  bucket. SVGs are served from the storage domain, which holds no cookies or sessions.
+  bucket. Uploads carry a browser cache header (`config/plugins.ts`): fresh for a day, then
+  rechecked in the background. It isn't `immutable` because replacing a file in the Media Library
+  keeps its URL. SVGs are served from the storage domain, which holds no cookies or sessions.
 - **Neon Object Storage is in beta.** The upload settings are plain S3, so moving to Cloudflare R2
   or AWS S3 means changing the `S3_*` values and copying the files.
 

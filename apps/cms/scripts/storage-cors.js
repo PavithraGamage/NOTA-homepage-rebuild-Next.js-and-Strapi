@@ -5,7 +5,9 @@
  *
  * Needed because the site draws the wordmark as a CSS mask and fetches the hero sequence with
  * fetch(); browsers make both requests in CORS mode. Uses the same S3_* variables as the upload
- * provider (config/plugins.ts) and allows the origins in CORS_ORIGINS. Export them in the shell
+ * provider (config/plugins.ts) and allows the origins in CORS_ORIGINS. It replaces the bucket's
+ * existing rules: a new Neon bucket starts with one that allows every origin, so run this once
+ * the site's URL is known. Export the variables in the shell
  * first; this script doesn't read .env, so it can't pick up local values by mistake.
  */
 const { S3Client, PutBucketCorsCommand, GetBucketCorsCommand } = require('@aws-sdk/client-s3');

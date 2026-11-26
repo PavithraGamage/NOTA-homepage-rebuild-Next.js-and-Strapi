@@ -2,11 +2,20 @@ import type { Core } from '@strapi/strapi';
 
 /**
  * Only the media this site uses: images (incl. SVG logos), videos, and JSON for the hero's
- * Lottie image sequence. SVG is allowed because uploads are served with a sandboxing
+ * Lottie image sequence. SVG is allowed because uploads Strapi serves itself carry a sandboxing
  * Content-Security-Policy (src/middlewares/upload-headers.ts), so a script inside an SVG
- * cannot run even if the file is opened directly.
+ * cannot run even if the file is opened directly. From object storage they're served on the
+ * bucket's own domain instead, which holds no cookies or sessions.
  */
 const allowedMediaTypes = ['image/*', 'video/mp4', 'video/webm', 'application/json'];
+
+/**
+ * Browser caching for files in the bucket, which has no CDN in front of it. Not `immutable`:
+ * replacing a file in the Media Library keeps its URL, so returning visitors must still pick up
+ * the new file. Fresh for a day, then shown from cache while the browser checks for a newer one
+ * in the background, for up to a week.
+ */
+const uploadCacheControl = 'public, max-age=86400, stale-while-revalidate=604800';
 
 const deniedTypes = [
   'application/vnd.microsoft.portable-executable',
@@ -54,7 +63,12 @@ const s3Provider = (env: Core.Config.Shared.ConfigParams['env']) =>
             },
           },
         },
-        actionOptions: { upload: {}, uploadStream: {}, delete: {} },
+        // The provider passes these to each upload (s3Options.params only supplies the bucket and ACL).
+        actionOptions: {
+          upload: { CacheControl: uploadCacheControl },
+          uploadStream: { CacheControl: uploadCacheControl },
+          delete: {},
+        },
       }
     : {};
 

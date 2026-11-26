@@ -198,7 +198,7 @@ Commits carry no AI trailer by my choice; AI use is disclosed here and in the lo
 ## Testing, accessibility and performance
 
 - **Unit tests (Vitest):** 74 in the site (content mappers, env, revalidation, form rules, rate limiter, CSP,
-  motion helpers) and 64 in the CMS (editor copy on every field, webhook bootstrap).
+  motion helpers) and 67 in the CMS (editor copy on every field, webhook bootstrap, upload settings).
 - **End to end (Playwright):** the form on desktop and a phone: empty and invalid input, success stored in Strapi,
   a repeat address, the honeypot. Firefox, WebKit and an iPhone on request (`E2E_ALL_BROWSERS=1`).
 - **Accessibility:** axe (WCAG 2.1 AA) on desktop, reduced motion, the phone menu and the open form; the only
