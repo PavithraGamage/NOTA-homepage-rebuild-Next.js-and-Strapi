@@ -20,6 +20,20 @@ describe('contentSecurityPolicy', () => {
     expect(csp['upgrade-insecure-requests']).toBeDefined();
   });
 
+  it('allows the media origin when uploads live in cloud storage', () => {
+    const csp = directives(
+      contentSecurityPolicy('abc', {
+        NODE_ENV: 'production',
+        STRAPI_PUBLIC_URL: 'https://cms.example.com',
+        MEDIA_PUBLIC_URL: 'https://res.cloudinary.com/demo-cloud',
+      }),
+    );
+    for (const directive of ['img-src', 'media-src', 'connect-src']) {
+      expect(csp[directive]).toContain('https://res.cloudinary.com');
+      expect(csp[directive]).not.toContain('demo-cloud');
+    }
+  });
+
   it('allows eval and the dev-server websocket only in development', () => {
     const csp = directives(
       contentSecurityPolicy('abc', { NODE_ENV: 'development', STRAPI_PUBLIC_URL: 'http://localhost:1337' }),

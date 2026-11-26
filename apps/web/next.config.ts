@@ -14,6 +14,16 @@ if (!URL.canParse(rawStrapiPublicUrl)) {
 }
 const strapiPublicUrl = new URL(rawStrapiPublicUrl);
 
+/**
+ * Optional cloud storage for uploads (e.g. https://res.cloudinary.com/<cloud-name>), used where
+ * the CMS host has no persistent disk. Its path is kept, so only this account's files are allowed.
+ */
+const rawMediaPublicUrl = process.env.MEDIA_PUBLIC_URL;
+if (rawMediaPublicUrl && !URL.canParse(rawMediaPublicUrl)) {
+  throw new Error(`MEDIA_PUBLIC_URL is not a valid URL ("${rawMediaPublicUrl}").`);
+}
+const mediaPublicUrl = rawMediaPublicUrl ? new URL(rawMediaPublicUrl) : undefined;
+
 const securityHeaders = [
   // R3: never index this rebuild, even if HTML metadata were changed.
   { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
@@ -42,6 +52,15 @@ const nextConfig: NextConfig = {
         port: strapiPublicUrl.port,
         pathname: '/uploads/**',
       },
+      ...(mediaPublicUrl
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: mediaPublicUrl.hostname,
+              pathname: `${mediaPublicUrl.pathname.replace(/\/$/, '')}/**`,
+            },
+          ]
+        : []),
     ],
   },
   async headers() {

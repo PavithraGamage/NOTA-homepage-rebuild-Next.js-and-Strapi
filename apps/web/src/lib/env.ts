@@ -6,10 +6,18 @@ import { z } from 'zod';
  * NEXT_PUBLIC_, so they cannot end up in the browser bundle (`server-only` enforces it).
  */
 export const serverEnvSchema = z.object({
-  /** Strapi over Railway's private network, e.g. http://cms.railway.internal:1337 */
+  /**
+   * Strapi as this server reaches it: a private network where there is one (Railway:
+   * http://cms.railway.internal:1337), otherwise its public https URL (Netlify → Render).
+   */
   STRAPI_INTERNAL_URL: z.url(),
   /** Strapi's public origin, used to build absolute media URLs for the browser. */
   STRAPI_PUBLIC_URL: z.url(),
+  /**
+   * Where media is served when uploads live in cloud storage rather than on Strapi's disk,
+   * e.g. https://res.cloudinary.com/<cloud-name>. Allowed by the CSP and next/image.
+   */
+  MEDIA_PUBLIC_URL: z.url().optional(),
   /** Read-only API token for published content. */
   STRAPI_READ_TOKEN: z.string().min(20, 'STRAPI_READ_TOKEN looks too short'),
   /** Create-only token for waitlist entries (required from Phase 5). */
