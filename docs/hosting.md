@@ -96,7 +96,9 @@ the bucket's CORS rule needs the website's URL.
 
 ## Checks after the first deploy
 
-- The site renders, and the response has `X-Robots-Tag: noindex`.
+- The site renders, and the response has `X-Robots-Tag: noindex`. If every route shows Netlify's
+  own 404 page and `/BUILD_ID` loads, the Next.js runtime didn't run: the deploy log should list
+  `@netlify/plugin-nextjs` (declared in `netlify.toml`).
 - Change a heading in the admin and publish: the next refresh shows it.
 - Submit the order form: the entry appears under *Waitlist signup*; a repeat address shows success
   without a second entry.

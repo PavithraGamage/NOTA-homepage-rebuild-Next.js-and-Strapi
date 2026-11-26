@@ -14,3 +14,10 @@
 [build.environment]
   NODE_VERSION = "24"
   NEXT_TELEMETRY_DISABLED = "1"
+
+# Netlify's Next.js runtime (OpenNext adapter): turns .next into server functions and static assets.
+# Netlify normally adds it on its own, but didn't for this monorepo (the app is in apps/web), so it's
+# declared here and pinned in apps/web/package.json. Without it, .next is uploaded as plain files
+# and every route returns 404.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
